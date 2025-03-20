@@ -1,8 +1,15 @@
 <?php
 
-namespace Gii\ModuleItem\Concerns;
+namespace Hanafalah\ModuleItem\Concerns;
 
-trait HasItemStock{
-    public function stock(){return $this->morphOneModel('ItemStock','subject');}
-    public function stocks(){return $this->morphManyModel('ItemStock','subject');}
+trait HasItemStock
+{
+    public function stock()
+    {
+        return $this->morphOneModel('ItemStock', 'subject');
+    }
+    public function stocks()
+    {
+        return $this->morphManyModel('ItemStock', 'subject');
+    }
 }

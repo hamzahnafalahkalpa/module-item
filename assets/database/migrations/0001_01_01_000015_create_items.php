@@ -3,13 +3,14 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use Gii\ModuleItem\Models\{
-    Item, ItemStuff
+use Hanafalah\ModuleItem\Models\{
+    Item,
+    ItemStuff
 };
 
 return new class extends Migration
 {
-    use Zahzah\LaravelSupport\Concerns\NowYouSeeMe;
+    use Hanafalah\LaravelSupport\Concerns\NowYouSeeMe;
 
     private $__table;
 
@@ -28,21 +29,21 @@ return new class extends Migration
         $table_name = $this->__table->getTable();
         if (!$this->isTableExists()) {
             Schema::create($table_name, function (Blueprint $table) {
-                $itemStuff = app(config('database.models.ItemStuff',ItemStuff::class));
+                $itemStuff = app(config('database.models.ItemStuff', ItemStuff::class));
 
                 $table->id();
-                $table->string('barcode',50)->nullable()->unique();
-                $table->string('item_code',50)->nullable();
+                $table->string('barcode', 50)->nullable()->unique();
+                $table->string('item_code', 50)->nullable();
                 $table->string('reference_type', 50);
                 $table->string('reference_id', 36);
                 $table->string('name');
                 $table->unsignedSmallInteger('net_qty')->nullable();
 
-                $table->foreignIdFor($itemStuff::class,'net_unit_id')
-                      ->nullable()->index()->constrained($itemStuff->getTable(),$itemStuff->getKeyName())
-                      ->cascadeOnUpdate()->nullOnDelete();
+                $table->foreignIdFor($itemStuff::class, 'net_unit_id')
+                    ->nullable()->index()->constrained($itemStuff->getTable(), $itemStuff->getKeyName())
+                    ->cascadeOnUpdate()->nullOnDelete();
 
-                $table->string('netto',100)->nullable();
+                $table->string('netto', 100)->nullable();
                 $table->unsignedBigInteger('selling_price')->default(0);
                 $table->unsignedBigInteger('cogs')->default(0);
                 $table->unsignedBigInteger('last_selling_price')->default(0);
@@ -52,9 +53,9 @@ return new class extends Migration
                 $table->unsignedBigInteger('min_stock')->default(150);
                 $table->boolean('is_using_batch')->default(false)->nullable(false);
 
-                $table->foreignIdFor($itemStuff::class,'unit_id')
-                      ->nullable()->index()->constrained($itemStuff->getTable(),$itemStuff->getKeyName())
-                      ->cascadeOnUpdate()->nullOnDelete();
+                $table->foreignIdFor($itemStuff::class, 'unit_id')
+                    ->nullable()->index()->constrained($itemStuff->getTable(), $itemStuff->getKeyName())
+                    ->cascadeOnUpdate()->nullOnDelete();
 
                 $table->string('status', 60)->default(0);
                 $table->json('props')->nullable();

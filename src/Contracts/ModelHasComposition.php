@@ -1,9 +1,7 @@
 <?php
 
-namespace Gii\ModuleItem\Contracts;
+namespace Hanafalah\ModuleItem\Contracts;
 
-use Zahzah\LaravelSupport\Contracts\DataManagement;
+use Hanafalah\LaravelSupport\Contracts\DataManagement;
 
-interface ModelHasComposition extends DataManagement {
-
-}
+interface ModelHasComposition extends DataManagement {}

@@ -1,9 +1,7 @@
 <?php
 
-namespace Gii\ModuleItem;
+namespace Hanafalah\ModuleItem;
 
-use Zahzah\LaravelSupport\Supports\PackageManagement;
+use Hanafalah\LaravelSupport\Supports\PackageManagement;
 
-class ModuleItem extends PackageManagement{
-
-}
+class ModuleItem extends PackageManagement {}

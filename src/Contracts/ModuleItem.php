@@ -1,9 +1,7 @@
 <?php
 
-namespace Gii\ModuleItem\Contracts;
+namespace Hanafalah\ModuleItem\Contracts;
 
-use Zahzah\LaravelSupport\Contracts\DataManagement;
+use Hanafalah\LaravelSupport\Contracts\DataManagement;
 
-interface ModuleItem extends DataManagement {
-
-}
+interface ModuleItem extends DataManagement {}

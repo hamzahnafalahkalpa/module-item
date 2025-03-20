@@ -1,15 +1,15 @@
 <?php
 
-use Gii\ModuleItem\Models\CardStock;
-use Gii\ModuleItem\Models\Item;
+use Hanafalah\ModuleItem\Models\CardStock;
+use Hanafalah\ModuleItem\Models\Item;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use Zahzah\ModuleTransaction\Models\Transaction\Transaction;
+use Hanafalah\ModuleTransaction\Models\Transaction\Transaction;
 
 return new class extends Migration
 {
-    use Zahzah\LaravelSupport\Concerns\NowYouSeeMe;
+    use Hanafalah\LaravelSupport\Concerns\NowYouSeeMe;
 
     private $__table;
 
@@ -33,11 +33,11 @@ return new class extends Migration
 
                 $table->ulid('id')->primary();
                 $table->foreignIdFor($item::class)->nullable(false)
-                      ->index()->constrained()->cascadeOnDelete()->cascadeOnUpdate();
+                    ->index()->constrained()->cascadeOnDelete()->cascadeOnUpdate();
 
                 $table->foreignIdFor($transaction::class)->nullable(false)
-                      ->index()->constrained()->cascadeOnDelete()->cascadeOnUpdate();
-                      
+                    ->index()->constrained()->cascadeOnDelete()->cascadeOnUpdate();
+
                 $table->timestamp('reported_at')->nullable();
                 $table->json('props')->nullable();
                 $table->timestamps();
@@ -48,9 +48,9 @@ return new class extends Migration
             });
 
             Schema::table($table_name, function (Blueprint $table) {
-                $table->foreignIdFor($this->__table,'parent_id')
-                        ->nullable()->after($this->__table->getKeyName())
-                        ->index()->constrained()->cascadeOnDelete()->cascadeOnUpdate();
+                $table->foreignIdFor($this->__table, 'parent_id')
+                    ->nullable()->after($this->__table->getKeyName())
+                    ->index()->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             });
         }
     }

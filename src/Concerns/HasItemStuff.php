@@ -1,7 +1,11 @@
 <?php
 
-namespace Gii\ModuleItem\Concerns;
+namespace Hanafalah\ModuleItem\Concerns;
 
-trait HasItemStuff{
-    public function itemStuff(){return $this->belongsToModel('ItemStuff');} 
+trait HasItemStuff
+{
+    public function itemStuff()
+    {
+        return $this->belongsToModel('ItemStuff');
+    }
 }

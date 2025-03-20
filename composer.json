@@ -1,22 +1,22 @@
 {
-    "name": "gii/module-item",
+    "name": "hanafalah/module-item",
     "description": "module for item in klinik or puskesmas",
     "type": "library",
     "require": {
-        "zahzah/laravel-support": "dev-production",
-        "zahzah/module-warehouse": "dev-production",
-        "zahzah/module-transaction": "dev-production",
-        "zahzah/module-distribution": "dev-production"
+        "hanafalah/laravel-support": "dev-production",
+        "hanafalah/module-warehouse": "dev-production",
+        "hanafalah/module-transaction": "dev-production",
+        "hanafalah/module-distribution": "dev-production"
     },
     "autoload": {
         "psr-4": {
-            "Gii\\ModuleItem\\": "src/"
+            "Hanafalah\\ModuleItem\\": "src/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "Gii\\ModuleItem\\ModuleItemServiceProvider"
+                "Hanafalah\\ModuleItem\\ModuleItemServiceProvider"
             ]
         }
     },

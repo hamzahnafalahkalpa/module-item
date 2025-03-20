@@ -1,13 +1,13 @@
 <?php
 
-use Gii\ModuleItem\Models\ItemStuff;
+use Hanafalah\ModuleItem\Models\ItemStuff;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    use Zahzah\LaravelSupport\Concerns\NowYouSeeMe;
+    use Hanafalah\LaravelSupport\Concerns\NowYouSeeMe;
 
     private $__table;
 
@@ -30,14 +30,14 @@ return new class extends Migration
                 $table->string("flag", 100);
                 $table->string("name");
                 $table->json('props')->nullable();
-                
+
                 $table->index(["flag"], "ist_flag");
             });
 
-            Schema::table($table_name,function (Blueprint $table){
-                $table->foreignIdFor($this->__table,'parent_id')
-                        ->nullable()->after($this->__table->getKeyName())
-                        ->index()->constrained()->cascadeOnDelete()->cascadeOnUpdate();
+            Schema::table($table_name, function (Blueprint $table) {
+                $table->foreignIdFor($this->__table, 'parent_id')
+                    ->nullable()->after($this->__table->getKeyName())
+                    ->index()->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             });
         }
     }

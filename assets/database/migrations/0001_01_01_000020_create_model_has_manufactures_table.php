@@ -1,6 +1,6 @@
 <?php
 
-use Gii\ModuleItem\Models\{
+use Hanafalah\ModuleItem\Models\{
     ModelHasManufacture,
     Manufacture
 };
@@ -11,28 +11,30 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-   use Zahzah\LaravelSupport\Concerns\NowYouSeeMe;
+    use Hanafalah\LaravelSupport\Concerns\NowYouSeeMe;
 
     private $__table;
 
-    public function __construct(){
+    public function __construct()
+    {
         $this->__table = app(config('database.models.ModelHasManufacture', ModelHasManufacture::class));
     }
 
-    public function up(): void{
+    public function up(): void
+    {
         $table_name = $this->__table->getTable();
-        if (!$this->isTableExists()){
+        if (!$this->isTableExists()) {
             Schema::create($table_name, function (Blueprint $table) {
                 $manufacture = app(config('database.models.Manufacture', Manufacture::class));
 
                 $table->id();
-                $table->string('model_type',50)->nullable(false);
-                $table->string('model_id',36)->nullable(false);
+                $table->string('model_type', 50)->nullable(false);
+                $table->string('model_id', 36)->nullable(false);
                 $table->foreignIdFor($manufacture::class)->index()
-                      ->constrained()->cascadeOnUpdate()->restrictOnDelete();
-                
-                $table->index(['model_type','model_id'],'model_ref');
-                $table->index(['model_type','model_id','manufacture_id'],'model_mf_ref');
+                    ->constrained()->cascadeOnUpdate()->restrictOnDelete();
+
+                $table->index(['model_type', 'model_id'], 'model_ref');
+                $table->index(['model_type', 'model_id', 'manufacture_id'], 'model_mf_ref');
             });
         }
     }

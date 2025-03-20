@@ -1,12 +1,12 @@
 <?php
 
-namespace Gii\ModuleItem;
+namespace Hanafalah\ModuleItem;
 
-use Gii\ModulePayer\{
+use Hanafalah\ModulePayer\{
     Models\Item,
     Schemas\Item as SchemaPayer,
 };
-use Zahzah\LaravelSupport\Providers\BaseServiceProvider;
+use Hanafalah\LaravelSupport\Providers\BaseServiceProvider;
 
 class ModuleItemServiceProvider extends BaseServiceProvider
 {
@@ -18,10 +18,10 @@ class ModuleItemServiceProvider extends BaseServiceProvider
     public function register()
     {
         $this->registerMainClass(ModuleItem::class)
-             ->registerCommandService(Providers\CommandServiceProvider::class)
-             ->registers([
+            ->registerCommandService(Providers\CommandServiceProvider::class)
+            ->registers([
                 '*',
-                'Services'  => function(){
+                'Services'  => function () {
                     $this->binds([
                         Contracts\ModuleItem::class  => ModuleItem::class,
                         Contracts\Item::class        => Schemas\Item::class,
@@ -31,14 +31,16 @@ class ModuleItemServiceProvider extends BaseServiceProvider
                         Contracts\CardStock::class => Schemas\CardStock::class,
                     ]);
                 },
-             ]);
+            ]);
     }
 
-    protected function dir(): string{
-        return __DIR__.'/';
+    protected function dir(): string
+    {
+        return __DIR__ . '/';
     }
 
-    protected function migrationPath(string $path = ''): string{
+    protected function migrationPath(string $path = ''): string
+    {
         return database_path($path);
     }
 }

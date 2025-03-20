@@ -1,6 +1,6 @@
 <?php
 
-use Gii\ModuleItem\{
+use Hanafalah\ModuleItem\{
     Models as ModuleItem,
     Contracts
 };

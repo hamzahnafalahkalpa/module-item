@@ -1,18 +1,19 @@
 <?php
 
-use Gii\ModuleItem\Models\ItemStuff;
-use Gii\ModuleItem\Models\Composition;
+use Hanafalah\ModuleItem\Models\ItemStuff;
+use Hanafalah\ModuleItem\Models\Composition;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-   use Zahzah\LaravelSupport\Concerns\NowYouSeeMe;
+    use Hanafalah\LaravelSupport\Concerns\NowYouSeeMe;
 
     private $__table;
 
-    public function __construct(){
+    public function __construct()
+    {
         $this->__table = app(config('database.models.Composition', Composition::class));
     }
 
@@ -24,17 +25,17 @@ return new class extends Migration
     public function up(): void
     {
         $table_name = $this->__table->getTable();
-        if (!$this->isTableExists()){
+        if (!$this->isTableExists()) {
             Schema::create($table_name, function (Blueprint $table) {
-                $itemStuff = app(config('database.models.ItemStuff',ItemStuff::class));
-                
+                $itemStuff = app(config('database.models.ItemStuff', ItemStuff::class));
+
                 $table->id();
                 $table->string('name')->nullable(false);
                 $table->unsignedInteger('unit_scale')->default(0)->nullable(false);
-                $table->foreignIdFor($itemStuff::class,'unit_id')
-                        ->nullable()->index()->constrained($itemStuff->getTable(),$itemStuff->getKeyName())
-                        ->cascadeOnUpdate()->nullOnDelete();
-                $table->string('unit_name',100)->nullable(false);
+                $table->foreignIdFor($itemStuff::class, 'unit_id')
+                    ->nullable()->index()->constrained($itemStuff->getTable(), $itemStuff->getKeyName())
+                    ->cascadeOnUpdate()->nullOnDelete();
+                $table->string('unit_name', 100)->nullable(false);
                 $table->json("props");
             });
         }

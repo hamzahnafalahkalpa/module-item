@@ -1,12 +1,12 @@
 <?php
 
-namespace Gii\ModuleItem\Contracts;
+namespace Hanafalah\ModuleItem\Contracts;
 
 use Illuminate\Database\Eloquent\Builder;
-use Zahzah\LaravelSupport\Contracts\DataManagement;
+use Hanafalah\LaravelSupport\Contracts\DataManagement;
 
-interface Composition extends DataManagement {
-    public function prepareStoreComposition(? array $attributes = null);
+interface Composition extends DataManagement
+{
+    public function prepareStoreComposition(?array $attributes = null);
     public function composition(mixed $conditionals = null): Builder;
-    
 }

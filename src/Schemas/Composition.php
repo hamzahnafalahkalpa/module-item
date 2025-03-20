@@ -1,21 +1,22 @@
 <?php
 
-namespace Gii\ModuleItem\Schemas;
+namespace Hanafalah\ModuleItem\Schemas;
 
-use Gii\ModuleItem\Contracts\{
+use Hanafalah\ModuleItem\Contracts\{
     Composition as ContractsComposition,
 };
-use Gii\ModuleItem\Resources\Composition\{
+use Hanafalah\ModuleItem\Resources\Composition\{
     ViewComposition
 };
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Zahzah\LaravelSupport\Supports\PackageManagement;
+use Hanafalah\LaravelSupport\Supports\PackageManagement;
 
-class Composition extends PackageManagement implements ContractsComposition{
+class Composition extends PackageManagement implements ContractsComposition
+{
     protected array $__guard   = ['id'];
-    protected array $__add     = ['name','unit_scale','unit_id','unit_name'];
+    protected array $__add     = ['name', 'unit_scale', 'unit_id', 'unit_name'];
     protected string $__entity = 'Composition';
     public static $composition_model;
 
@@ -23,7 +24,8 @@ class Composition extends PackageManagement implements ContractsComposition{
         'view' => ViewComposition::class,
     ];
 
-    public function prepareStoreComposition(? array $attributes = null){
+    public function prepareStoreComposition(?array $attributes = null)
+    {
         $attributes ??= request()->all();
 
         $itemStuff = $this->ItemStuffModel()->find($attributes['unit_id']);
@@ -35,7 +37,7 @@ class Composition extends PackageManagement implements ContractsComposition{
             'unit_name'  => $itemStuff->name
         ];
 
-        if (isset($attributes['id'])){
+        if (isset($attributes['id'])) {
             $create['id'] = $attributes['id'];
         }
 
@@ -44,7 +46,8 @@ class Composition extends PackageManagement implements ContractsComposition{
         return $composition;
     }
 
-    public function composition(mixed $conditionals = null): Builder{
+    public function composition(mixed $conditionals = null): Builder
+    {
         $this->booting();
         return $this->CompositionModel()->conditionals($conditionals);
     }

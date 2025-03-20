@@ -1,12 +1,16 @@
 <?php
 
-namespace Gii\ModuleItem\Concerns;
+namespace Hanafalah\ModuleItem\Concerns;
 
-trait HasComposition{
-    public function compositions(){
+trait HasComposition
+{
+    public function compositions()
+    {
         return $this->belongsToManyModel(
-            'Composition','ModelHasComposition',
-            'model_id','composition_id'
+            'Composition',
+            'ModelHasComposition',
+            'model_id',
+            'composition_id'
         );
     }
 }
