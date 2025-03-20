@@ -1,0 +1,38 @@
+{
+    "id" : null, //ID MEDICAL ITEM
+    "name": "Paracetamol",
+    "is_pom": false, //USING PRESCRIPTION
+    "registration_no": null,
+    "medicine": {
+        "id" : null,
+        "acronym": "pct",
+        "is_lasa": false, //true/false
+        "is_antibiotic": false, //true/false
+        "is_high_alert": false, //true/false
+        "is_narcotic": false, //true/false
+        "usage_location_id": null, //GET FROM GET MEDICAL ITEM STUFF - MEDICAL USAGE LOCATION
+        "usage_route_id": null, //GET FROM GET MEDICAL ITEM STUFF - MEDICAL USAGE ROUTE
+        "therapeutic_class_id": null//GET FROM GET MEDICAL ITEM STUFF - MEDICAL THERAPEUTIC CLASS
+    },
+    "item": {
+        "barcode": null,
+        "unit_id": 1,//GET FROM GET MEDICAL ITEM STUFF - MEDICAL UNIT SALES,
+        "net_unit_id": null, //GET FROM GET MEDICAL ITEM STUFF - MEDICAL NET UNIT 
+        "net_qty": null,
+        "cogs" : 5000, //HPP
+        "margin": 20,
+        "min_stock": 150,
+        "is_using_batch": true, //true/false
+        "tax" : 11,
+        "netto": null,
+        "compositions" : [
+            {
+                "id": null,
+                "name": "Paracetamol",
+                "unit_scale" : 500,
+                "unit_id": 293, //GET FROM GET MEDICAL ITEM STUFF - MEDICAL COMPOSITION UNIT
+
+            }
+        ]
+    }
+} 
