@@ -6,12 +6,14 @@ use Hanafalah\ModuleItem\{
 };
 
 return [
-    'contracts' => [
-        'card_stock'    => Contracts\CardStock::class,
-        'composition'   => Contracts\Composition::class,
-        'item'          => Contracts\Item::class,
-        'item_stock'    => Contracts\ItemStock::class,
-        'item_stuff'    => Contracts\ItemStuff::class
+    'app' => [
+        'contracts' => [
+            'card_stock'    => Contracts\CardStock::class,
+            'composition'   => Contracts\Composition::class,
+            'item'          => Contracts\Item::class,
+            'item_stock'    => Contracts\ItemStock::class,
+            'item_stuff'    => Contracts\ItemStuff::class
+        ],
     ],
     'database'  => [
         'models' => [
