@@ -14,26 +14,13 @@ class Material extends BaseModel
 
     protected $list = ['id', 'name', 'props'];
 
-    public function toShowApi()
-    {
-        return new ShowMaterial($this);
-    }
+    public function getShowResource(){return ShowMaterial::class;}
 
-    public function toViewApi()
-    {
-        return new ViewMaterial($this);
-    }
+    public function getViewResource(){return ViewMaterial::class;}
 
-    public function billOfMaterial()
-    {
-        return $this->hasOneModel('BillOfMaterial');
-    }
-    public function billOfMaterials()
-    {
-        return $this->hasManyModel('BillOfMaterial');
-    }
-    public function items()
-    {
+    public function billOfMaterial(){return $this->hasOneModel('BillOfMaterial');}
+    public function billOfMaterials(){return $this->hasManyModel('BillOfMaterial');}
+    public function items(){
         return $this->belongsToManyModel(
             'Item',
             'BillOfMaterial',

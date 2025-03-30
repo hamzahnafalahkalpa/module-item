@@ -2,26 +2,22 @@
 
 namespace Hanafalah\ModuleItem\Models;
 
-use Hanafalah\ModuleItem\Resources\ItemStock\ShowItemStock;
-use Hanafalah\ModuleItem\Resources\ItemStock\ViewItemStock;
+use Hanafalah\ModuleItem\Resources\ItemStock\{
+    ShowItemStock, ViewItemStock
+};
 use Hanafalah\ModuleWarehouse\Models\Stock\Stock;
 
 class ItemStock extends Stock
 {
     protected $table = 'stocks';
 
-    public function toViewApi()
-    {
-        return new ViewItemStock($this);
+    public function getViewResource(){
+        return ViewItemStock::class;
     }
 
-    public function toShowApi()
-    {
-        return new ShowItemStock($this);
+    public function getShowResource(){
+        return ShowItemStock::class;
     }
 
-    public function item()
-    {
-        return $this->morphTo('subject');
-    }
+    public function item(){return $this->morphTo('subject');}
 }
