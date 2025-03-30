@@ -9,22 +9,14 @@ class Manufacture extends BaseModel
 {
     protected $list  = ['id', 'name'];
 
-    public function toViewApi()
-    {
-        return new ViewManufacture($this);
+    public function getViewResource(){
+        return ViewManufacture::class;
     }
 
-    public function toShowApi()
-    {
-        return new ViewManufacture($this);
+    public function getShowResource(){
+        return ViewManufacture::class;
     }
 
-    public function modelHasManufacture()
-    {
-        return $this->hasOneModel('ModelHasManufacture');
-    }
-    public function modelHasManufactures()
-    {
-        return $this->hasManyModel('ModelHasManufacture');
-    }
+    public function modelHasManufacture(){return $this->hasOneModel('ModelHasManufacture');}
+    public function modelHasManufactures(){return $this->hasManyModel('ModelHasManufacture');}
 }

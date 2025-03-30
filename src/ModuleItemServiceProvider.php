@@ -15,27 +15,13 @@ class ModuleItemServiceProvider extends BaseServiceProvider
      *
      * @return void
      */
-    public function register()
-    {
+    public function register(){
         $this->registerMainClass(ModuleItem::class)
             ->registerCommandService(Providers\CommandServiceProvider::class)
-            ->registers([
-                '*',
-                'Services'  => function () {
-                    $this->binds([
-                        Contracts\ModuleItem::class  => ModuleItem::class,
-                        Contracts\Item::class        => Schemas\Item::class,
-                        Contracts\ItemStuff::class   => Schemas\ItemStuff::class,
-                        Contracts\ItemStock::class   => Schemas\ItemStock::class,
-                        Contracts\Composition::class => Schemas\Composition::class,
-                        Contracts\CardStock::class => Schemas\CardStock::class,
-                    ]);
-                },
-            ]);
+            ->registers(['*']);
     }
 
-    protected function dir(): string
-    {
+    protected function dir(): string{
         return __DIR__ . '/';
     }
 

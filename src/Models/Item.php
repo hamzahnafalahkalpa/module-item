@@ -15,46 +15,29 @@ class Item extends BaseModel
     use HasProps, SoftDeletes, HasComposition, HasServicePrice;
 
     protected $list     = [
-        'id',
-        'barcode',
-        'item_code',
-        'reference_type',
-        'reference_id',
-        'name',
-        'unit_id',
-        'selling_price',
-        'cogs',
-        'min_stock',
-        'is_using_batch',
-        'status'
+        'id','barcode','item_code','reference_type','reference_id',
+        'name','unit_id','selling_price','cogs','min_stock','is_using_batch','status'
     ];
 
     protected $show     = [
-        'last_selling_price',
-        'last_cogs',
-        'margin',
-        'tax',
-        'netto',
-        'net_qty',
+        'last_selling_price','last_cogs','margin','tax','netto','net_qty',
         'net_unit_id'
     ];
 
     protected $casts = [
-        'name' => 'string'
+        'name' => 'string',
+        'selling_price' => 'int'
     ];
 
-    public function toShowApi()
-    {
-        return new ShowItem($this);
+    public function getViewResource(){
+        return ViewItem::class;
     }
 
-    public function toViewApi()
-    {
-        return new ViewItem($this);
+    public function getShowResource(){
+        return ShowItem::class;
     }
 
-    protected static function booted(): void
-    {
+    protected static function booted(): void{
         parent::booted();
         static::creating(function ($query) {
             if (!isset($query->transaction_code)) {
@@ -67,9 +50,7 @@ class Item extends BaseModel
         });
         static::created(function ($query) {
             if (isset($query->margin) && isset($query->cogs)) {
-                if (!$query->isDirty(['selling_price'])) {
-                    $query->selling_price = static::updateSellingPrice($query);
-                }
+                if (!$query->isDirty(['selling_price'])) $query->selling_price = static::updateSellingPrice($query);
             }
             static::withoutEvents(function () use ($query) {
                 $query->save();
@@ -80,7 +61,7 @@ class Item extends BaseModel
                 $query->last_cogs          = $query->getOriginal('cogs');
                 $query->last_selling_price = $query->getOriginal('selling_price') ?? 0;
                 if (!$query->isDirty(['selling_price'])) {
-                    $query->selling_price      = static::updateSellingPrice($query);
+                    $query->selling_price = static::updateSellingPrice($query);
                 }
             }
         });

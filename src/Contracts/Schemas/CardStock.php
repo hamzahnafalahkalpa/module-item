@@ -1,12 +1,12 @@
 <?php
 
-namespace Hanafalah\ModuleItem\Contracts;
+namespace Hanafalah\ModuleItem\Contracts\Schemas;
 
+use Hanafalah\LaravelSupport\Contracts\Supports\DataManagement;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Hanafalah\LaravelSupport\Contracts\DataManagement;
 
 interface CardStock extends DataManagement
 {

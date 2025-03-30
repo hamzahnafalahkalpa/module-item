@@ -26,8 +26,7 @@ class CardStock extends BaseModel
         'reported_at' => 'date'
     ];
 
-    protected static function booted(): void
-    {
+    protected static function booted(): void{
         parent::booted();
         static::created(function ($query) {
             $transactionItem = $query->transactionItem;
@@ -141,13 +140,9 @@ class CardStock extends BaseModel
                                         $new_cogs = ($qty_total > 0)
                                             ? ($current_stock * $item->cogs + $stock_movement->total_cogs) / $qty_total
                                             : $item->cogs;
-                                        break;
-                                    case MainMovement::METHOD_MIN:
-                                        $new_cogs = ($item->cogs > $cogs) ? $item->cogs : $cogs;
-                                        break;
-                                    case MainMovement::METHOD_MAX:
-                                        $new_cogs = ($item->cogs < $cogs) ? $cogs : $item->cogs;
-                                        break;
+                                    break;
+                                    case MainMovement::METHOD_MIN: $new_cogs = ($item->cogs > $cogs) ? $item->cogs : $cogs;break;
+                                    case MainMovement::METHOD_MAX: $new_cogs = ($item->cogs < $cogs) ? $cogs : $item->cogs;break;
                                 }
                                 $stock_movement->new_cogs          = $new_cogs;
                                 $stock_movement->new_selling_price = $new_cogs;
@@ -166,22 +161,15 @@ class CardStock extends BaseModel
         });
     }
 
-    private static function calculatingStock($movement_model, $stock_model = null, $direction)
-    {
-        $opening_stock                 = $movement_model->opening_stock;
+    private static function calculatingStock($movement_model, $stock_model = null, $direction){
+        $opening_stock = $movement_model->opening_stock;
         switch ($direction) {
-            case MainMovement::IN:
-                $closing              = $opening_stock + $movement_model->qty;
-                break;
-            case MainMovement::OUT:
-                $closing = $opening_stock - $movement_model->qty;
-                break;
-            case MainMovement::OPNAME:
-                $closing = $movement_model->qty;
-                break;
+            case MainMovement::IN     : $closing = $opening_stock + $movement_model->qty;break;
+            case MainMovement::OUT    : $closing = $opening_stock - $movement_model->qty;break;
+            case MainMovement::OPNAME : $closing = $movement_model->qty;break;
         }
         $movement_model->closing_stock = $closing;
-        $movement_model->save();
+        $movement_model->save(); 
         if (isset($stock_model)) {
             $stock_model->stock = $closing;
             $stock_model->save();
@@ -189,8 +177,7 @@ class CardStock extends BaseModel
         return [$movement_model, $stock_model];
     }
 
-    protected static function createParentMovement($movement_model, $stock_model)
-    {
+    protected static function createParentMovement($movement_model, $stock_model){
         $stock_parent_model = $stock_model->parent;
         if (!isset($stock_parent_model)) throw new \Exception('Parent stock not found on card stock event processing', 422);
         if (isset($movement_model->card_stock_id)) { //IS STOCK MOVEMENT IDENTIFIED BY card_stock_id
@@ -227,47 +214,23 @@ class CardStock extends BaseModel
         return $parent_movement_model;
     }
 
-    public function toShowApi()
-    {
-        return new ShowCardStock($this);
+    public function getShowResource(){
+        return ShowCardStock::class;
     }
 
-    public function toViewApi()
-    {
-        return new ViewCardStock($this);
+    public function getViewResource(){
+        return ViewCardStock::class;
     }
 
-    public function reference()
-    {
-        return $this->morphTo();
-    }
-    public function item()
-    {
-        return $this->belongsToModel('Item');
-    }
-    public function goodsReceiptUnit()
-    {
-        return $this->hasOneModel('GoodsReceiptUnit');
-    }
-    public function goodsReceiptUnits()
-    {
-        return $this->hasManyModel('GoodsReceiptUnit');
-    }
-    public function stockMovement()
-    {
-        return $this->hasOneModel('StockMovement');
-    }
-    public function stockMovements()
-    {
-        return $this->hasManyModel('StockMovement');
-    }
-    public function transaction()
-    {
-        return $this->belongsToModel('Transaction');
-    }
+    public function reference(){return $this->morphTo();}
+    public function item(){return $this->belongsToModel('Item');}
+    public function goodsReceiptUnit(){return $this->hasOneModel('GoodsReceiptUnit');}
+    public function goodsReceiptUnits(){return $this->hasManyModel('GoodsReceiptUnit');}
+    public function stockMovement(){return $this->hasOneModel('StockMovement');}
+    public function stockMovements(){return $this->hasManyModel('StockMovement');}
+    public function transaction(){return $this->belongsToModel('Transaction');}
 
-    public function transactionItem()
-    {
+    public function transactionItem(){
         $transactionItemTable = $this->TransactionItemModel()->getTable();
         return $this->hasOneThroughModel(
             'TransactionItem',

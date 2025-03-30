@@ -12,26 +12,15 @@ class Composition extends BaseModel
     public $timestamps = false;
     protected $list  = ['id', 'name', 'unit_scale', 'unit_id', 'unit_name', 'props'];
 
-    public function toViewApi()
-    {
-        return new ViewComposition($this);
+    public function getViewResource(){
+        return ViewComposition::class;
     }
 
-    public function toShowApi()
-    {
-        return new ViewComposition($this);
+    public function getShowResource(){
+        return ViewComposition::class;
     }
 
-    public function unit()
-    {
-        return $this->belongsToModel('ItemStuff', 'unit_id');
-    }
-    public function ModelHasComposition()
-    {
-        return $this->hasOneModel('ModelHasComposition');
-    }
-    public function ModelHasCompositions()
-    {
-        return $this->hasManyModel('ModelHasComposition');
-    }
+    public function unit(){return $this->belongsToModel('ItemStuff', 'unit_id');}
+    public function ModelHasComposition(){return $this->hasOneModel('ModelHasComposition');}
+    public function ModelHasCompositions(){return $this->hasManyModel('ModelHasComposition');}
 }
