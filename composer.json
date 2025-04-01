@@ -3,10 +3,10 @@
     "description": "module for item in klinik or puskesmas",
     "type": "library",
     "require": {
-        "hanafalah/laravel-support": "dev-production",
-        "hanafalah/module-warehouse": "dev-production",
-        "hanafalah/module-transaction": "dev-production",
-        "hanafalah/module-distribution": "dev-production"
+        "hanafalah/laravel-support": "1.x",
+        "hanafalah/module-warehouse": "1.x",
+        "hanafalah/module-transaction": "1.x",
+        "hanafalah/module-distribution": "1.x"
     },
     "autoload": {
         "psr-4": {
@@ -22,8 +22,8 @@
     },
     "authors": [
         {
-            "name": "Alghi",
-            "email": "alghi@mvi.co.id"
+            "name": "Hamzah",
+            "email": "hamzahnafalah@gmail.com"
         }
     ],
     "license": "MIT",
