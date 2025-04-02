@@ -2,7 +2,7 @@
 
 namespace Hanafalah\ModuleItem\Schemas;
 
-use Hanafalah\ModuleItem\Contracts\{
+use Hanafalah\ModuleItem\Contracts\Schemas\{
     ItemStock as ContractsItemStock
 };
 use Hanafalah\ModuleItem\Resources\ItemStock\ShowItemStock;
