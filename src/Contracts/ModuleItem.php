@@ -2,6 +2,6 @@
 
 namespace Hanafalah\ModuleItem\Contracts;
 
-use Hanafalah\LaravelSupport\Contracts\DataManagement;
+use Hanafalah\LaravelSupport\Contracts\Supports\DataManagement;
 
 interface ModuleItem extends DataManagement {}
