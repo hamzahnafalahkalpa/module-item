@@ -3,7 +3,7 @@
 namespace Hanafalah\ModuleItem\Contracts\Schemas;
 
 use Illuminate\Database\Eloquent\Model;
-use Hanafalah\ModuleWarehouse\Contracts\Stock;
+use Hanafalah\ModuleWarehouse\Contracts\Schemas\Stock;
 
 interface ItemStock extends Stock
 {
