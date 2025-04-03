@@ -49,7 +49,7 @@ class Item extends PackageManagement implements ContractsItem
             $guard = ['id' => $attributes['id']];
         } else {
             $guard = [
-                'reference_id' => $attributes['reference_id'],
+                'reference_id'   => $attributes['reference_id'],
                 'reference_type' => $attributes['reference_type']
             ];
         }
