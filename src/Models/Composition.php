@@ -10,7 +10,10 @@ class Composition extends BaseModel
 {
     use HasProps;
     public $timestamps = false;
-    protected $list  = ['id', 'name', 'unit_scale', 'unit_id', 'unit_name', 'props'];
+    protected $list  = [
+        'id', 'name', 'unit_scale', 
+        'unit_id', 'unit_name', 'props'
+    ];
 
     public function getViewResource(){
         return ViewComposition::class;

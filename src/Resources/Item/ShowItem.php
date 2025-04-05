@@ -23,10 +23,7 @@ class ShowItem extends ViewItem
             'last_selling_price' => $this->last_selling_price,
             'netto'              => $this->netto,
             'net_qty'            => $this->net_qty,
-            'net_unit'           => [
-                'net_unit_id'    => $this->net_unit_id ?? null,
-                'net_unit_name'  => $this->net_unit_name ?? null
-            ],
+            'net_unit'           => $this->prop_net_unit,
             'reference' => $this->relationValidation('reference', function () {
                 $reference = $this->reference;
                 return $reference->toShowApi();

@@ -8,9 +8,9 @@ use Hanafalah\LaravelSupport\Contracts\Supports\DataManagement;
 
 interface ItemStuff extends DataManagement
 {
+    public function getItemStuff(): mixed;
     public function prepareViewItemStuffList(mixed $flag, mixed $attributes = null): Collection;
     public function viewItemStuffList(mixed $flag): array;
-    public function viewMultipleItemStuffList(mixed $flag): array;
-    public function getItemStuff(): mixed;
-    public function itemStuff(mixed $flag, mixed $conditionals = null): Builder;
+    public function viewMultipleItemStuffList(mixed $flags): array;
+    public function itemStuff(mixed $flag, mixed $conditionals = null): Builder;    
 }

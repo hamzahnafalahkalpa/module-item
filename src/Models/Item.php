@@ -16,7 +16,8 @@ class Item extends BaseModel
 
     protected $list     = [
         'id','barcode','item_code','reference_type','reference_id',
-        'name','unit_id','selling_price','cogs','min_stock','is_using_batch','status'
+        'name','unit_id','selling_price','cogs','min_stock','is_using_batch',
+        'status','props'
     ];
 
     protected $show     = [

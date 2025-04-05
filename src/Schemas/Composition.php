@@ -3,42 +3,29 @@
 namespace Hanafalah\ModuleItem\Schemas;
 
 use Hanafalah\ModuleItem\Contracts\Schemas\{
-    Composition as ContractsComposition,
-};
-use Hanafalah\ModuleItem\Resources\Composition\{
-    ViewComposition
+    Composition as ContractsComposition
 };
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Hanafalah\LaravelSupport\Supports\PackageManagement;
+use Hanafalah\ModuleItem\Contracts\Data\CompositionData;
 
 class Composition extends PackageManagement implements ContractsComposition
 {
-    protected array $__guard   = ['id'];
-    protected array $__add     = ['name', 'unit_scale', 'unit_id', 'unit_name'];
     protected string $__entity = 'Composition';
     public static $composition_model;
 
-    protected array $__resources = [
-        'view' => ViewComposition::class,
-    ];
-
-    public function prepareStoreComposition(?array $attributes = null)
-    {
-        $attributes ??= request()->all();
-
-        $itemStuff = $this->ItemStuffModel()->find($attributes['unit_id']);
+    public function prepareStoreComposition(CompositionData $composition_dto){
+        $itemStuff = $this->ItemStuffModel()->find($composition_dto->unit_id);
 
         $create = [
-            'name'       => $attributes['name'],
-            'unit_scale' => $attributes['unit_scale'],
-            'unit_id'    => $attributes['unit_id'],
+            'name'       => $composition_dto->name,
+            'unit_scale' => $composition_dto->unit_scale,
+            'unit_id'    => $composition_dto->unit_id,
             'unit_name'  => $itemStuff->name
         ];
 
-        if (isset($attributes['id'])) {
-            $create['id'] = $attributes['id'];
+        if (isset($composition_dto->id)) {
+            $create['id'] = $composition_dto->id;
         }
 
         $composition = $this->composition()->updateOrCreate($create);
@@ -46,8 +33,7 @@ class Composition extends PackageManagement implements ContractsComposition
         return $composition;
     }
 
-    public function composition(mixed $conditionals = null): Builder
-    {
+    public function composition(mixed $conditionals = null): Builder{
         $this->booting();
         return $this->CompositionModel()->conditionals($conditionals);
     }
