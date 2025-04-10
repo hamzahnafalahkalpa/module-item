@@ -26,11 +26,11 @@ class Item extends PackageManagement implements ContractsItem
         ]
     ];
 
-    protected function viewUsingRelation(){
+    protected function viewUsingRelation(): array{
         return [];
     }
 
-    protected function showUsingRelation(){
+    protected function showUsingRelation(): array{
         return [
             'reference', 'itemStock' => function ($query) {
                 $query->whereNull('funding_id')->with([
