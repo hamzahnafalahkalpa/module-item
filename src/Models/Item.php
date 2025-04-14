@@ -68,8 +68,7 @@ class Item extends BaseModel
         });
     }
 
-    private static function updateSellingPrice($query)
-    {
+    private static function updateSellingPrice($query){
         $selling_price = ($query->isDirty('selling_price')) ? $query->selling_price : round(((($query->margin ?? 0) / 100) * $query->cogs) + $query->cogs);
         $query->servicePrice()->create([
             'price' => $selling_price
@@ -77,41 +76,16 @@ class Item extends BaseModel
         return $selling_price;
     }
 
-    public function scopeUsingBatch($builder)
-    {
-        return $builder->where('is_using_batch', true);
-    }
-
-    public function unit()
-    {
-        return $this->belongsToModel('ItemStuff', 'unit_id');
-    }
-    public function reference()
-    {
-        return $this->morphTo();
-    }
-    public function netUnit()
-    {
-        return $this->belongsToModel('ItemStuff', 'net_unit_id');
-    }
-    public function itemStock()
-    {
-        return $this->morphOneModel('ItemStock', 'subject');
-    }
-    public function itemStocks()
-    {
-        return $this->morphManyModel('ItemStock', 'subject');
-    }
-    public function cardStock()
-    {
-        return $this->hasOneModel('CardStock');
-    }
-    public function cardStocks()
-    {
-        return $this->hasManyModel('CardStock');
-    }
-    public function manufacture()
-    {
+    public function scopeUsingBatch($builder){return $builder->where('is_using_batch', true);}
+    public function unit(){return $this->belongsToModel('ItemStuff', 'unit_id');}
+    public function reference(){return $this->morphTo();}
+    public function netUnit(){return $this->belongsToModel('ItemStuff', 'net_unit_id');}
+    public function itemStock(){return $this->morphOneModel('ItemStock', 'subject');}
+    public function itemStocks(){return $this->morphManyModel('ItemStock', 'subject');}
+    public function cardStock(){return $this->hasOneModel('CardStock');}
+    public function cardStocks(){return $this->hasManyModel('CardStock');}
+    
+    public function manufacture(){
         return $this->belongsToManyModel(
             'Manufacture',
             'ModelHasManufacture',
@@ -119,8 +93,8 @@ class Item extends BaseModel
             $this->ManufactureModel()->getForeignKey()
         )->where('model_type', $this->getMorphClass());
     }
-    public function materials()
-    {
+    
+    public function materials(){
         return $this->belongsToManyModel(
             'Material',
             'BillOfMaterial',
