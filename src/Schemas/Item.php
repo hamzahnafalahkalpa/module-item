@@ -77,7 +77,8 @@ class Item extends PackageManagement implements ContractsItem
         $item->last_cogs           = $item_dto->last_cogs ?? $current_cogs ?? 0;
         
         if (isset($item_dto->selling_price)) $item->selling_price = $item_dto->selling_price ?? 0;        
-        foreach ($item_dto->props as $key => $prop) $item->{$key} = $prop;
+        $this->fillingProps($item, $item_dto->props);
+        // foreach ($item_dto->props as $key => $prop) $item->{$key} = $prop;
         $item->save();
         return $item;
     }

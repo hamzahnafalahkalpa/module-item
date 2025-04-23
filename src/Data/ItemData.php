@@ -23,11 +23,19 @@ class ItemData extends Data implements DataItemData{
 
     #[MapInputName('unit_id')]
     #[MapName('unit_id')]
-    public mixed $unit_id;
+    public mixed $unit_id = null;
+
+    #[MapInputName('unit')]
+    #[MapName('unit')]
+    public ?array $unit = null;
 
     #[MapInputName('net_unit_id')]
     #[MapName('net_unit_id')]
     public mixed $net_unit_id = null;
+
+    #[MapInputName('net_unit')]
+    #[MapName('net_unit')]
+    public ?array $net_unit = null;
 
     #[MapInputName('net_qty')]
     #[MapName('net_qty')]
@@ -85,6 +93,17 @@ class ItemData extends Data implements DataItemData{
                 'id'    => $item_stuff->getKey(),
                 'name'  => $item_stuff->name
             ];
+        }else{
+            if (isset($data->unit,$data->unit['name'])){
+                $unit = self::new()->ItemStuffModel()->firstOrCreate([
+                    'name' => $data->unit['name'],
+                    'flag' => 'UNIT_SALES'
+                ]);
+                $data->props['prop_unit'] = [
+                    'id'    => $unit->getKey(),
+                    'name'  => $unit->name
+                ];
+            }
         }
 
         if (isset($item_dto->net_unit_id)) {
@@ -93,6 +112,17 @@ class ItemData extends Data implements DataItemData{
                 'id'    => $item_stuff->getKey(),
                 'name'  => $item_stuff->name
             ];
+        }else{
+            if (isset($data->net_unit,$data->net_unit['name'])){
+                $unit = self::new()->ItemStuffModel()->firstOrCreate([
+                    'name' => $data->net_unit['name'],
+                    'flag' => 'NET_UNIT'
+                ]);
+                $data->props['prop_net_unit'] = [
+                    'id'    => $unit->getKey(),
+                    'name'  => $unit->name
+                ];
+            }
         }
         return $data;
     }
