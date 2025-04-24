@@ -26,25 +26,6 @@ class Item extends PackageManagement implements ContractsItem
         ]
     ];
 
-    protected function viewUsingRelation(): array{
-        return [];
-    }
-
-    protected function showUsingRelation(): array{
-        return [
-            'reference', 'itemStock' => function ($query) {
-                $query->whereNull('funding_id')->with([
-                    'stockBatches.batch',
-                    'childs.stockBatches.batch'
-                ]);
-            }
-        ];
-    }
-
-    public function getItem(): mixed{
-        return static::$item_model;
-    }
-
     private function localAddSuffixCache(mixed $suffix): void{
         $this->addSuffixCache($this->__cache['index'], "item-index", $suffix);
     }
@@ -166,7 +147,8 @@ class Item extends PackageManagement implements ContractsItem
         $cache_reference_type .= '-paginate';
         $this->localAddSuffixCache($cache_reference_type);
         return $this->cacheWhen(!$this->isSearch() || !isset(request()->warehouse_id) || request()->type !== 'all', $this->__cache['index'], function () use ($paginate_dto) {
-            return $this->item()->orderBy('name', 'asc')->paginate(...$paginate_dto->toArray())->appends(request()->all());
+            return $this->item()->with($this->viewUsingRelation())->orderBy('name', 'asc')
+                        ->paginate(...$paginate_dto->toArray())->appends(request()->all());
         });
     }
 
@@ -224,30 +206,32 @@ class Item extends PackageManagement implements ContractsItem
 
     public function item(mixed $conditionals = null): Builder{
         $this->booting();
-        return $this->ItemModel()->with('compositions')->when(isset(request()->warehouse_id), function ($query) {
-                $warehouse = app(config('module-warehouse.warehouse'))->findOrFail(request()->warehouse_id);
-                $query->whereHas('itemStock', function ($query) use ($warehouse) {
-                    $query->where('warehouse_id', $warehouse->getKey())->where('warehouse_type', $warehouse->getMorphClass());
-                })->with([
-                    'itemStock' => function ($query) use ($warehouse) {
-                        $query->whereNull('funding_id')->where('warehouse_id', $warehouse->getKey())
-                            ->where('warehouse_type', $warehouse->getMorphClass());
-                        if (!isset(request()->non_batch)) $query->with('stockBatches.batch');
-                        if (!isset(request()->non_funding)) {
-                            $query->with([
-                                'childs' => function ($query) {
-                                    $query->with(['funding', 'stockBatches.batch']);
-                                }
-                            ]);
+        return $this->ItemModel()->with('compositions')
+                ->when(isset(request()->warehouse_id), function ($query) {
+                    $warehouse = $this->{config('module-warehouse.warehouse').'Model'}()->findOrFail(request()->warehouse_id);
+                    $query->whereHas('itemStock', function ($query) use ($warehouse) {
+                        $query->where('warehouse_id', $warehouse->getKey())->where('warehouse_type', $warehouse->getMorphClass());
+                    })
+                    ->with([
+                        'itemStock' => function ($query) use ($warehouse) {
+                            $query->whereNull('funding_id')->where('warehouse_id', $warehouse->getKey())
+                                ->where('warehouse_type', $warehouse->getMorphClass());
+                            if (!isset(request()->non_batch)) $query->with('stockBatches.batch');
+                            if (!isset(request()->non_funding)) {
+                                $query->with([
+                                    'childs' => function ($query) {
+                                        $query->with(['funding', 'stockBatches.batch']);
+                                    }
+                                ]);
+                            }
                         }
-                    }
-                ]);
-            })
-            ->when(isset(request()->type), function ($query) {
-                $type = Str::studly(request()->type);
-                $query->where('reference_type', $type);
-            })
-            ->withParameters()
-            ->conditionals($conditionals);
+                    ]);
+                })
+                ->when(isset(request()->search_reference_type), function ($query) {
+                    $type = Str::studly(request()->search_reference_type);
+                    $query->where('reference_type', $type);
+                })
+                ->withParameters()
+                ->conditionals($this->mergeCondition($conditionals ?? []));
     }
 }

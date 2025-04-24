@@ -30,6 +30,21 @@ class Item extends BaseModel
         'selling_price' => 'int'
     ];
 
+    public function viewUsingRelation(): array{
+        return [];
+    }
+
+    public function showUsingRelation(): array{
+        return [
+            'reference', 'itemStock' => function ($query) {
+                $query->whereNull('funding_id')->with([
+                    'stockBatches.batch',
+                    'childs.stockBatches.batch'
+                ]);
+            }
+        ];
+    }
+
     public function getViewResource(){
         return ViewItem::class;
     }

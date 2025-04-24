@@ -38,6 +38,9 @@ return new class extends Migration
                 $table->foreignIdFor($transaction::class)->nullable(false)
                     ->index()->constrained()->cascadeOnDelete()->cascadeOnUpdate();
 
+                $table->string('reference_type',50)->nullable();
+                $table->string('reference_id',36)->nullable();
+                
                 $table->timestamp('reported_at')->nullable();
                 $table->json('props')->nullable();
                 $table->timestamps();
@@ -45,6 +48,7 @@ return new class extends Migration
 
                 $table->index(['item_id'], 'item_ref');
                 $table->index(['item_id', 'transaction_id'], 'cs_trx_item');
+                $table->index(['reference_type','reference_id'], 'cs_ref_item');
             });
 
             Schema::table($table_name, function (Blueprint $table) {

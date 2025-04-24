@@ -9,9 +9,15 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Hanafalah\LaravelSupport\Contracts\Supports\DataManagement;
 use Hanafalah\ModuleItem\Contracts\Data\ItemData;
 
+/**
+ * @see \Hanafalah\ModuleItem\Schemas\Item
+ * @method self conditionals(mixed $conditionals)
+ * @method bool deleteItem()
+ * @method bool prepareDeleteItem(? array $attributes = null)
+ * @method mixed getItem()
+ */
 interface Item extends DataManagement
 {
-    public function getItem(): mixed;
     public function prepareStoreItem(ItemData $item_dto): Model;
     public function storeItem(): array;
     public function prepareShowItem(?Model $model = null, ?array $attributes = null): Model;
