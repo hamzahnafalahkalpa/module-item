@@ -38,6 +38,18 @@ class CardStock extends PackageManagement implements ContractsCardStock
             ];
         }
         $card_stock = $this->CardStockModel()->firstOrCreate($guard);
+        if (!isset($card_stock_dto->reference_id)){
+            $reference = $card_stock->reference;
+            $card_stock_dto->props['prop_reference']['id']   = $reference->getKey();
+            $card_stock_dto->props['prop_reference']['name'] = $reference->name;
+        }
+        if (isset($card_stock_dto->props['warehouse_id'])){
+            $warehouse = $this->{config('module-item.warehouse').'Model'}()->findOrFail($card_stock_dto->props['warehouse_id']);
+            $card_stock_dto->props['prop_warehouse'] = [
+                'id'   => $warehouse->getKey(),
+                'name' => $warehouse->name
+            ];
+        }
 
         // if (isset($card_stock_dto->props['is_procurement'])) $card_stock->is_procurement = $card_stock_dto->props['is_procurement'];
         // if (isset($card_stock_dto->props['margin']))         $card_stock->margin         = intval($card_stock_dto->props['margin'] ?? 0);
@@ -62,59 +74,64 @@ class CardStock extends PackageManagement implements ContractsCardStock
         $stock_movement->goods_receipt_unit_id = $goods->getKey();
     }
 
-    public function prepareStoreCardStock(CardStockData $card_stock_dto): Model{
-        $card_stock  = $this->createCardStock($card_stock_dto);
+    protected function storeMappingStockMovement(CardStockData &$card_stock_dto, Model $card_stock){
         $transaction = $card_stock->transaction;
-        if (isset($card_stock_dto->stock_movements) && count($card_stock_dto->stock_movements)) {
-            foreach ($card_stock_dto->stock_movements as $stock_movement_dto) {
-                $stock_movement_dto->direction ??= $card_stock_dto->props['direction'];
-                $item_model = $this->ItemModel()->findOrFail($card_stock->item_id);
+        foreach ($card_stock_dto->stock_movements as $stock_movement_dto) {
+            $stock_movement_dto->direction ??= $card_stock_dto->props['direction'];
 
-                $this->isNeedParent($stock_movement_dto, $transaction);
+            $this->isNeedParent($stock_movement_dto, $transaction);
 
-                $card_stock_dto->props['total_qty'] ??= 0;
-                if (isset($stock_movement_dto->goods_receipt_unit)) {
-                    $stock_movement_dto->goods_receipt_unit->card_stock_id = $card_stock->getKey();
-                    $this->createGoodsReceiptUnit($stock_movement_dto);
-                } else {
-                    $card_stock_dto->props['total_qty'] += $stock_movement_dto->qty ?? 0;
-                }
-                if (isset($stock_movement_dto->item_stock_id)) {
-                    $item_stock = $this->ItemStockModel()->findOrFail($stock_movement_dto->item_stock_id);
-                    $stock_movement_dto->funding_id = $item_stock->funding_id ?? null;
-                    if (isset($stock_movement_dto->funding_id)){
-                        $funding = $this->FundingModel()->findOrFail($stock_movement_dto->funding_id);
-                        $stock_movement_dto->props['prop_funding'] = [
-                            'id'   => $stock_movement_dto->funding_id,
-                            'name' => $funding->name
-                        ];
-                    }
-                }
-                $stock_movement_model = $this->schemaContract('stock_movement')->prepareStoreStockMovement([
-                    'warehouse_id'          => $card_stock_dto->props['warehouse_id'] ?? $stock_movement_dto->props['warehouse_id'] ?? null,
-                    'warehouse_type'        => $card_stock_dto->props['warehouse_type'] ?? $stock_movement_dto->props['warehouse_type'] ?? null,
-                    'funding_id'            => $card_stock_dto->props['funding_id'] ?? $stock_movement_dto->props['funding_id'] ?? null,
-                    'direction'             => $card_stock_dto->props['direction'] ?? $stock_movement_dto->direction,
-                    'card_stock_id'         => $card_stock->getKey(),
-                    'id'                    => $stock_movement_dto->id ?? null,
-                    'parent_id'             => $stock_movement_dto->parent_id ?? null,
-                    'reference_type'        => $stock_movement_dto->reference_type ?? null,
-                    'reference_id'          => $stock_movement_dto->reference_id ?? null,
-                    'qty'                   => $stock_movement_dto->qty ?? null,
-                    'margin'                => $stock_movement_dto->props['margin'] ?? $card_stock_dto->props['margin'] ?? $item_model->margin ?? 0,
-                    'batch_movements'       => $stock_movement_dto->batch_movements ?? [],
-                    'goods_receipt_unit_id' => $stock_movement_dto->goods_receipt_unit_id ?? null,
-                    'price'                 => $stock_movement_dto->props['price'] ?? null
-                ]);
-
-                if (isset($stock_movement_dto->props['cogs'])) {
-                    $stock_movement_model->cogs       = $stock_movement_dto->props['cogs'];
-                    $stock_movement_model->total_cogs = $stock_movement_dto->props['total_cogs'] ?? $stock_movement_dto->props['cogs'] ?? null;
-                    $stock_movement_model->save();
-
-                    $card_stock_dto->props['total_cogs'] += $stock_movement_dto->props['cogs'];
+            $card_stock_dto->props['total_qty'] ??= 0;
+            if (isset($stock_movement_dto->goods_receipt_unit)) {
+                $stock_movement_dto->goods_receipt_unit->card_stock_id = $card_stock->getKey();
+                $this->createGoodsReceiptUnit($stock_movement_dto);
+            } else {
+                $card_stock_dto->props['total_qty'] += $stock_movement_dto->qty ?? 0;
+            }
+            if (isset($stock_movement_dto->item_stock_id)) {
+                $item_stock = $this->ItemStockModel()->findOrFail($stock_movement_dto->item_stock_id);
+                $stock_movement_dto->funding_id = $item_stock->funding_id ?? null;
+                if (isset($stock_movement_dto->props->funding_id)){
+                    $funding = $this->FundingModel()->findOrFail($stock_movement_dto->props->funding_id);
+                    $stock_movement_dto->props->props['prop_funding'] = [
+                        'id'   => $stock_movement_dto->funding_id,
+                        'name' => $funding->name
+                    ];
                 }
             }
+            $stock_movement_dto->card_stock_id = $card_stock->getKey();
+            $stock_movement_model = $this->schemaContract('stock_movement')->prepareStoreStockMovement($stock_movement_dto);
+            // ([
+            //     'id'                    => $stock_movement_dto->id ?? null,
+            //     'direction'             => $stock_movement_dto->direction,
+            //     'card_stock_id'         => $card_stock->getKey(),
+            //     'reference_type'        => $stock_movement_dto->reference_type ?? null,
+            //     'reference_id'          => $stock_movement_dto->reference_id ?? null,
+            //     'goods_receipt_unit_id' => $stock_movement_dto->goods_receipt_unit_id ?? null,
+            //     'qty'                   => $stock_movement_dto->qty ?? null,
+            //     'batch_movements'       => $stock_movement_dto->batch_movements ?? [],
+            //     'warehouse_id'          => $card_stock_dto->props['warehouse_id'] ?? $stock_movement_dto->props['warehouse_id'] ?? null,
+            //     'warehouse_type'        => $card_stock_dto->props['warehouse_type'] ?? $stock_movement_dto->props['warehouse_type'] ?? null,
+            //     'funding_id'            => $stock_movement_dto->props['funding_id'] ?? null,
+            //     'parent_id'             => $stock_movement_dto->parent_id ?? null,
+            //     'margin'                => $stock_movement_dto->props['margin'] ?? $card_stock_dto->props['margin'] ?? $item_model->margin ?? 0,
+            //     'price'                 => $stock_movement_dto->props['price'] ?? null
+            // ]);
+            
+            if (isset($stock_movement_dto->props->cogs)) {
+                $stock_movement_model->cogs       = $stock_movement_dto->props->cogs;
+                $stock_movement_model->total_cogs = $stock_movement_dto->props->total_cogs ?? $stock_movement_dto->props->cogs ?? null;
+                $stock_movement_model->save();
+
+                $card_stock_dto->props['total_cogs'] += $stock_movement_dto->props->cogs;
+            }
+        }
+    }
+
+    public function prepareStoreCardStock(CardStockData $card_stock_dto): Model{
+        $card_stock  = $this->createCardStock($card_stock_dto);
+        if (isset($card_stock_dto->stock_movements) && count($card_stock_dto->stock_movements)) {
+            $this->storeMappingStockMovement($card_stock_dto, $card_stock);
         } else {
             if (isset($card_stock_dto->props['cogs'])) $card_stock_dto->total_cogs = $card_stock_dto->props['cogs'];
         }
@@ -142,12 +159,6 @@ class CardStock extends PackageManagement implements ContractsCardStock
     }
 
 
-    // public function prepareViewCardStockList(?array $attributes = null): Collection{
-    //     $attributes ??= request()->all();
-    //     $model = $this->cardStock()->with($this->showViewUsingRelation())->orderBy('reported_at', 'desc')->get();
-    //     return static::$card_stock_model = $model;
-    // }
-
     public function prepareViewCardStockPaginate(int $perPage = 50, array $columns = ['*'], string $pageName = 'page', ?int $page = null, ?int $total = null): LengthAwarePaginator{
         $paginate_options = compact('perPage', 'columns', 'pageName', 'page', 'total');
 
@@ -155,31 +166,32 @@ class CardStock extends PackageManagement implements ContractsCardStock
         if (!isset($attributes['item_id'])) throw new \Exception('item_id is required');
 
         $model = $this->cardStock()->with([
-            'transaction',
-            'stockMovement' => function ($query) use ($attributes) {
-                $query->with([
-                    'batchMovements.batch',
-                    'childs.batchMovements.batch',
-                ])->when(isset($attributes['warehouse_id']), function ($query) use ($attributes) {
-                    $query->hasWarehouse($attributes['warehouse_id']);
-                });
-            }
-        ])
-            ->whereNotNull('reported_at')
-            ->where('item_id', $attributes['item_id'])
-            ->when(isset($attributes['warehouse_id']), function ($query) use ($attributes) {
-                $query->whereHas('stockMovement', function ($query) use ($attributes) {
-                    $query->hasWarehouse($attributes['warehouse_id']);
-                });
-            })
-            ->orderBy('reported_at', 'desc')
-            ->paginate(...$this->arrayValues($paginate_options));
+                    'transaction',
+                    'stockMovement' => function ($query) use ($attributes) {
+                        $query->with([
+                            'batchMovements.batch',
+                            'childs.batchMovements.batch',
+                        ])->when(isset($attributes['warehouse_id']), function ($query) use ($attributes) {
+                            $query->hasWarehouse($attributes['warehouse_id']);
+                        });
+                    }
+                ])
+                ->whereNotNull('reported_at')
+                ->where('item_id', $attributes['item_id'])
+                ->when(isset($attributes['warehouse_id']), function ($query) use ($attributes) {
+                    $query->whereHas('stockMovement', function ($query) use ($attributes) {
+                        $query->hasWarehouse($attributes['warehouse_id']);
+                    });
+                })
+                ->orderBy('reported_at', 'desc')
+                ->paginate(...$this->arrayValues($paginate_options));
         return static::$card_stock_model = $model;
     }
 
     public function cardStock(mixed $conditionals = null): Builder
     {
         $this->booting();
-        return $this->CardStockModel()->conditionals($this->mergeCondition($conditionals ?? []))->withParameters()->orderBy('repored_at','desc');
+        return $this->CardStockModel()->conditionals($this->mergeCondition($conditionals ?? []))
+                    ->withParameters()->orderBy('repored_at','desc');
     }
 }

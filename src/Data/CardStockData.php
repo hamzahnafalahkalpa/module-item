@@ -49,17 +49,15 @@ class CardStockData extends Data implements DataCardStockData{
             'id'    => $data->item_id ?? null,
             'name'  => null
         ];
-
         if (isset($data->props['prop_item']['id']) && !isset($data->props['prop_item']['name'])){
             $item = self::new()->ItemModel()->findOrFail($data->props['prop_item']['id']);
             $data->props['prop_item']['name'] = $item->name;
         }
-
+        
         $data->props['prop_reference'] = [
             'id'    => $data->reference_id ?? null,
             'name'  => null
         ];
-
         if (isset($data->props['prop_reference']['id']) && !isset($data->props['prop_reference']['name'])){
             $reference = self::new()->{$data->reference_type.'Model'}()->findOrFail($data->props['prop_reference']['id']);
             $data->props['prop_reference']['name'] = $reference->name ?? null;

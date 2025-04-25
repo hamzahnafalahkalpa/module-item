@@ -17,12 +17,14 @@ class ViewCardStock extends ApiResource
         $arr = [
             'id'              => $this->id,
             'item'            => $this->prop_item,
+            'reference'       => $this->prop_reference,
             'stock_movement'  => $this->relationValidation('stockMovement', function () {
                 return $this->stockMovement->toViewApi();
             }),
             'transaction' => $this->relationValidation('transaction', function () {
                 return $this->transaction->toViewApi();
             }),
+            'warehouse'      => $this->prop_warehouse,
             'tax'            => $this->tax ?? null,
             'total_qty'      => $this->total_qty ?? null,
             'total_tax'      => $this->total_tax ?? null,
@@ -31,7 +33,7 @@ class ViewCardStock extends ApiResource
             'created_at'     => $this->created_at,
             'updated_at'     => $this->updated_at,
             'reported_at'    => $this->reported_at,
-            'props'          => $this->getPropsData() ?? null
+            // 'props'          => $this->getPropsData() ?? null
         ];
 
         return $arr;
