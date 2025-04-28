@@ -51,13 +51,13 @@ class CardStock extends PackageManagement implements ContractsCardStock
             ];
         }
 
-        // if (isset($card_stock_dto->props['is_procurement'])) $card_stock->is_procurement = $card_stock_dto->props['is_procurement'];
-        // if (isset($card_stock_dto->props['margin']))         $card_stock->margin         = intval($card_stock_dto->props['margin'] ?? 0);
-
         $card_stock_dto->props['total_tax']  ??= 0;
         $card_stock_dto->props['total_cogs'] ??= 0;
         $card_stock->load(['transactionItem','transaction.reference']);
-        if (!isset($card_stock_dto->stock_movements) && isset($card_stock_dto->stock_movement)) $card_stock_dto->stock_movements = [$card_stock_dto->stock_movement];
+        if (count($card_stock_dto->stock_movements) == 0 && isset($card_stock_dto->stock_movement)) {
+            $card_stock_dto->stock_movements = [$card_stock_dto->stock_movement];
+            $card_stock_dto->stock_movement = null;
+        }
         return $card_stock;
     }
 
@@ -101,22 +101,6 @@ class CardStock extends PackageManagement implements ContractsCardStock
             }
             $stock_movement_dto->card_stock_id = $card_stock->getKey();
             $stock_movement_model = $this->schemaContract('stock_movement')->prepareStoreStockMovement($stock_movement_dto);
-            // ([
-            //     'id'                    => $stock_movement_dto->id ?? null,
-            //     'direction'             => $stock_movement_dto->direction,
-            //     'card_stock_id'         => $card_stock->getKey(),
-            //     'reference_type'        => $stock_movement_dto->reference_type ?? null,
-            //     'reference_id'          => $stock_movement_dto->reference_id ?? null,
-            //     'goods_receipt_unit_id' => $stock_movement_dto->goods_receipt_unit_id ?? null,
-            //     'qty'                   => $stock_movement_dto->qty ?? null,
-            //     'batch_movements'       => $stock_movement_dto->batch_movements ?? [],
-            //     'warehouse_id'          => $card_stock_dto->props['warehouse_id'] ?? $stock_movement_dto->props['warehouse_id'] ?? null,
-            //     'warehouse_type'        => $card_stock_dto->props['warehouse_type'] ?? $stock_movement_dto->props['warehouse_type'] ?? null,
-            //     'funding_id'            => $stock_movement_dto->props['funding_id'] ?? null,
-            //     'parent_id'             => $stock_movement_dto->parent_id ?? null,
-            //     'margin'                => $stock_movement_dto->props['margin'] ?? $card_stock_dto->props['margin'] ?? $item_model->margin ?? 0,
-            //     'price'                 => $stock_movement_dto->props['price'] ?? null
-            // ]);
             
             if (isset($stock_movement_dto->props->cogs)) {
                 $stock_movement_model->cogs       = $stock_movement_dto->props->cogs;
