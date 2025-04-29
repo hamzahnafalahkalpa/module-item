@@ -16,7 +16,7 @@ class Item extends BaseModel
 
     protected $list     = [
         'id','barcode','item_code','reference_type','reference_id',
-        'name','unit_id','selling_price','cogs','min_stock','is_using_batch',
+        'name','unit_id','selling_price','coa_id','cogs','min_stock','is_using_batch',
         'status','props'
     ];
 
@@ -117,4 +117,6 @@ class Item extends BaseModel
             'material_id'
         );
     }
+
+    public function coa(){return $this->belongsToModel('Coa');}
 }
