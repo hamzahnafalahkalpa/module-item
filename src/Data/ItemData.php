@@ -128,6 +128,18 @@ class ItemData extends Data implements DataItemData{
                 ];
             }
         }
+
+        $data->props['prop_coa'] = [
+            'id'    => null,
+            'name'  => null
+        ];
+        if (isset($data->coa_id)) {
+            $coa = self::new()->CoaModel()->findOrFail($data->coa_id);
+            $data->props['prop_coa'] = [
+                'id'    => $coa->getKey(),
+                'name'  => $coa->name
+            ];
+        }
         return $data;
     }
 }
