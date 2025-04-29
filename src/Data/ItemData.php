@@ -41,6 +41,10 @@ class ItemData extends Data implements DataItemData{
     #[MapName('net_qty')]
     public mixed $net_qty = null;
 
+    #[MapInputName('coa_id')]
+    #[MapName('coa_id')]
+    public mixed $coa_id = null;
+
     #[MapInputName('cogs')]
     #[MapName('cogs')]
     public ?int $cogs = 0;
