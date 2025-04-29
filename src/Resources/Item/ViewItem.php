@@ -43,7 +43,6 @@ class ViewItem extends ApiResource
         'selling_price'    => $this->selling_price,
         'cogs'             => $this->cogs,
         'status'           => $this->status,
-        'stock'            => $this->stock,
         'min_stock'        => $this->min_stock,
         'created_at'       => $this->created_at,
         'updated_at'       => $this->updated_at
