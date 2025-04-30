@@ -249,7 +249,9 @@ class CardStock extends BaseModel
     public function item(){return $this->belongsToModel('Item');}
     public function goodsReceiptUnit(){return $this->hasOneModel('GoodsReceiptUnit');}
     public function goodsReceiptUnits(){return $this->hasManyModel('GoodsReceiptUnit');}
-    public function stockMovement(){return $this->hasOneModel('StockMovement');}
+    public function stockMovement(){
+        return $this->hasOneModel('StockMovement');
+    }
     public function stockMovements(){return $this->hasManyModel('StockMovement');}
     public function transaction(){return $this->belongsToModel('Transaction');}
 

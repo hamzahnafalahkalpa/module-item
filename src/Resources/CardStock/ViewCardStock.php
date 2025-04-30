@@ -26,7 +26,7 @@ class ViewCardStock extends ApiResource
             }),
             'warehouse'      => $this->prop_warehouse,
             'tax'            => $this->tax ?? null,
-            'qty'            => $this->qty,
+            'qty'            => floatval($this->qty),
             'cogs'           => $this->cogs,
             'total_qty'      => $this->total_qty ?? null,
             'total_tax'      => $this->total_tax ?? null,
