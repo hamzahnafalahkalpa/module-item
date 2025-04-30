@@ -15,6 +15,10 @@ class CardStockData extends Data implements DataCardStockData{
     #[MapName('id')]
     public mixed $id = null;
 
+    #[MapInputName('parent_id')]
+    #[MapName('parent_id')]
+    public mixed $parent_id = null;
+
     #[MapInputName('reference_type')]
     #[MapName('reference_type')]
     public ?string $reference_type = null;
