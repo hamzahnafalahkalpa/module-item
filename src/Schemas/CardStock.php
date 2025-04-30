@@ -38,7 +38,7 @@ class CardStock extends PackageManagement implements ContractsCardStock
             ];
         }
         $card_stock = $this->CardStockModel()->firstOrCreate($guard);
-        if (!isset($card_stock_dto->reference_id)){
+        if (isset($card_stock_dto->reference_id)){
             $reference = $card_stock->reference;
             $card_stock_dto->props['prop_reference']['id']   = $reference->getKey();
             $card_stock_dto->props['prop_reference']['name'] = $reference->name;

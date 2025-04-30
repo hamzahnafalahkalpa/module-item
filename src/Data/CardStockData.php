@@ -62,6 +62,10 @@ class CardStockData extends Data implements DataCardStockData{
             $reference = self::new()->{$data->reference_type.'Model'}()->findOrFail($data->props['prop_reference']['id']);
             $data->props['prop_reference']['name'] = $reference->name ?? null;
         }
+
+        if (isset($data->props['cogs'],$data->props['qty'])){
+            $data->props['total_cogs'] = $data->props['cogs'] * $data->props['qty'];
+        }
         return $data;
     }
 }
