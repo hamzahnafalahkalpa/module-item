@@ -101,7 +101,7 @@ class ItemData extends Data implements DataItemData{
             if (isset($data->unit,$data->unit['name'])){
                 $unit = self::new()->ItemStuffModel()->firstOrCreate([
                     'name' => $data->unit['name'],
-                    'flag' => 'UNIT_SALES'
+                    'flag' => 'UnitSale'
                 ]);
                 $data->props['prop_unit'] = [
                     'id'    => $unit->getKey(),
@@ -120,7 +120,7 @@ class ItemData extends Data implements DataItemData{
             if (isset($data->net_unit,$data->net_unit['name'])){
                 $unit = self::new()->ItemStuffModel()->firstOrCreate([
                     'name' => $data->net_unit['name'],
-                    'flag' => 'NET_UNIT'
+                    'flag' => 'NetUnit'
                 ]);
                 $data->props['prop_net_unit'] = [
                     'id'    => $unit->getKey(),
