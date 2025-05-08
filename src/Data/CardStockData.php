@@ -4,6 +4,7 @@ namespace Hanafalah\ModuleItem\Data;
 
 use Hanafalah\LaravelSupport\Supports\Data;
 use Hanafalah\ModuleItem\Contracts\Data\CardStockData as DataCardStockData;
+use Hanafalah\ModuleItem\Contracts\Data\CardStockPropsData;
 use Hanafalah\ModuleWarehouse\Contracts\Data\StockMovementData;
 use Hanafalah\ModuleWarehouse\Data\StockMovementData as DataStockMovementData;
 use Spatie\LaravelData\Attributes\DataCollectionOf;
@@ -46,47 +47,44 @@ class CardStockData extends Data implements DataCardStockData{
 
     #[MapInputName('props')]
     #[MapName('props')]
-    public ?array $props = [];
+    public ?CardStockPropsData $props = null;
 
     public static function after(CardStockData $data): CardStockData{
-        $data->props['prop_item'] = [
+        $props = &$data->props->props;
+        $props['prop_item'] = [
             'id'    => $data->item_id ?? null,
             'name'  => null
         ];
-        if (isset($data->props['prop_item']['id']) && !isset($data->props['prop_item']['name'])){
-            $item = self::new()->ItemModel()->findOrFail($data->props['prop_item']['id']);
-            $data->props['prop_item']['name'] = $item->name;
+        if (isset($props['prop_item']['id']) && !isset($props['prop_item']['name'])){
+            $item = self::new()->ItemModel()->findOrFail($props['prop_item']['id']);
+            $props['prop_item']['name'] = $item->name;
         }
         
-        $data->props['prop_reference'] = [
+        $props['prop_reference'] = [
             'id'    => $data->reference_id ?? null,
             'name'  => null
         ];
-        if (isset($data->props['prop_reference']['id']) && !isset($data->props['prop_reference']['name'])){
-            $reference = self::new()->{$data->reference_type.'Model'}()->findOrFail($data->props['prop_reference']['id']);
-            $data->props['prop_reference']['name'] = $reference->name ?? null;
+        if (isset($props['prop_reference']['id']) && !isset($props['prop_reference']['name'])){
+            $reference = self::new()->{$data->reference_type.'Model'}()->findOrFail($props['prop_reference']['id']);
+            $props['prop_reference']['name'] = $reference->name ?? null;
         }
 
-        if (isset($data->props['tax'],$data->props['qty'])){
-            $data->props['total_taxs'] ??= [
+        if (isset($props['tax'],$props['qty'])){
+            $props['total_tax'] ??= [
                 'total' => 0,
                 'ppn' => 0
             ];
-            $data->props['total_tax'] ??= 0;
-            if (is_array($data->props['tax'])){
-                foreach ($data->props['tax'] as $key => $tax) {
-                    $tax_sum = $tax * $data->props['qty'];
-                    $data->props['total_taxs']['total'] += $tax_sum;
-                    $data->props['total_taxs'][$key]   ??= 0;
-                    $data->props['total_taxs'][$key]    += $tax_sum;
+            $props['total_tax'] ??= 0;
+            if (is_array($props['tax'])){
+                foreach ($props['tax'] as $key => $tax) {
+                    $tax_sum = $tax * $props['qty'];
+                    $props['total_tax']['total'] += $tax_sum;
+                    $props['total_tax'][$key]   ??= 0;
+                    $props['total_tax'][$key]    += $tax_sum;
                 }
             }else{
-                $data->props['total_tax'] += $data->props['tax'] * $data->props['qty'];
+                $props['total_tax'] += $props['tax'] * $props['qty'];
             }
-        }
-
-        if (isset($data->props['cogs'],$data->props['qty'])){
-            $data->props['total_cogs'] = $data->props['cogs'] * $data->props['qty'];
         }
         return $data;
     }
