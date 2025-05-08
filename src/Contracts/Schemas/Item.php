@@ -11,20 +11,19 @@ use Hanafalah\ModuleItem\Contracts\Data\ItemData;
 
 /**
  * @see \Hanafalah\ModuleItem\Schemas\Item
- * @method self conditionals(mixed $conditionals)
  * @method bool deleteItem()
  * @method bool prepareDeleteItem(? array $attributes = null)
  * @method mixed getItem()
+ * @method array storeItem(? ItemData $Item_dto = null)
+ * @method ?Model prepareShowItem(?Model $model = null, ?array $attributes = null)
+ * @method array showItem(?Model $model = null)
+ * @method Collection prepareViewItemList()
+ * @method array viewItemList()
+ * @method LengthAwarePaginator prepareViewItemPaginate(PaginateData $paginate_dto)
+ * @method array viewItemPaginate(?PaginateData $paginate_dto = null)
  */
 interface Item extends DataManagement
 {
     public function prepareStoreItem(ItemData $item_dto): Model;
-    public function storeItem(): array;
-    public function prepareShowItem(?Model $model = null, ?array $attributes = null): Model;
-    public function showItem(?Model $model = null): array;
-    public function prepareViewItemPaginate(mixed $cache_reference_type, ?array $morphs = null, PaginateData $paginate_dto): LengthAwarePaginator;
-    public function viewItemPaginate(mixed $reference_type, ?array $morphs = null, ?PaginateData $paginate_dto = null): array;
-    public function prepareFindItem(?array $attributes = null): mixed;
-    public function findItem(): mixed;
-    public function item(mixed $conditionals = null): Builder;    
+    public function item(mixed $conditionals = null): Builder;
 }

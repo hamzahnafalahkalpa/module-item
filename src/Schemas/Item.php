@@ -26,9 +26,9 @@ class Item extends PackageManagement implements ContractsItem
         ]
     ];
 
-    private function localAddSuffixCache(mixed $suffix): void{
-        $this->addSuffixCache($this->__cache['index'], "item-index", $suffix);
-    }
+    // private function localAddSuffixCache(mixed $suffix): void{
+    //     $this->addSuffixCache($this->__cache['index'], "item-index", $suffix);
+    // }
 
     protected function createItem(ItemData $item_dto): Model{
         if (isset($item_dto->id)) {
@@ -113,106 +113,97 @@ class Item extends PackageManagement implements ContractsItem
             $item->is_has_composition = false;
             $item->compositions()->detach();
         }
+        $this->fillingProps($item,$item_dto->props);
         $item->save();
         static::$item_model = $item;
         return $item;
     }
 
-    public function storeItem(?ItemData $item_dto = null): array{
-        return $this->transaction(function() use ($item_dto){
-            return $this->showItem($this->prepareStoreItem($item_dto ?? $this->requestDTO(ItemData::class)));
-        });
-    }
+    // public function storeItem(?ItemData $item_dto = null): array{
+    //     return $this->transaction(function() use ($item_dto){
+    //         return $this->showItem($this->prepareStoreItem($item_dto ?? $this->requestDTO(ItemData::class)));
+    //     });
+    // }
 
-    public function prepareShowItem(?Model $model = null, ?array $attributes = null): Model{
-        $model ??= $this->getItem();
-        if (!isset($model)) {
-            $id = request()->id;
-            if (!request()->has('id')) throw new \Exception('No id provided', 422);
-            $model = $this->item()->with($this->showUsingRelation())->find($id);
-        } else {
-            $model->load($this->showUsingRelation());
-        }
-        return static::$item_model = $model;
-    }
+    // public function prepareShowItem(?Model $model = null, ?array $attributes = null): Model{
+    //     $model ??= $this->getItem();
+    //     if (!isset($model)) {
+    //         $id = request()->id;
+    //         if (!request()->has('id')) throw new \Exception('No id provided', 422);
+    //         $model = $this->item()->with($this->showUsingRelation())->find($id);
+    //     } else {
+    //         $model->load($this->showUsingRelation());
+    //     }
+    //     return static::$item_model = $model;
+    // }
 
-    public function showItem(?Model $model = null): array{
-        return $this->showEntityResource(function() use ($model){
-            return $this->prepareShowItem($model);
-        });
-    }
+    // public function showItem(?Model $model = null): array{
+    //     return $this->showEntityResource(function() use ($model){
+    //         return $this->prepareShowItem($model);
+    //     });
+    // }
 
-    public function prepareViewItemPaginate(mixed $cache_reference_type, ?array $morphs = null, PaginateData $paginate_dto): LengthAwarePaginator{
-        $morphs              ??= $cache_reference_type;
-        $cache_reference_type .= '-paginate';
-        $this->localAddSuffixCache($cache_reference_type);
-        return $this->cacheWhen(!$this->isSearch() || !isset(request()->warehouse_id) || request()->type !== 'all', $this->__cache['index'], function () use ($paginate_dto) {
-            return $this->item()->with($this->viewUsingRelation())->orderBy('name', 'asc')
-                        ->paginate(...$paginate_dto->toArray())->appends(request()->all());
-        });
-    }
+    // public function prepareViewItemPaginate(mixed $cache_reference_type, ?array $morphs = null, PaginateData $paginate_dto): LengthAwarePaginator{
+    //     $morphs              ??= $cache_reference_type;
+    //     $cache_reference_type .= '-paginate';
+    //     $this->localAddSuffixCache($cache_reference_type);
+    //     return $this->cacheWhen(!$this->isSearch() || !isset(request()->warehouse_id) || request()->type !== 'all', $this->__cache['index'], function () use ($paginate_dto) {
+    //         return $this->item()->with($this->viewUsingRelation())->orderBy('name', 'asc')
+    //                     ->paginate(...$paginate_dto->toArray())->appends(request()->all());
+    //     });
+    // }
 
-    public function viewItemPaginate(mixed $reference_type, ?array $morphs = null, ?PaginateData $paginate_dto = null): array{
-        return $this->viewEntityResource(function() use ($reference_type, $morphs, $paginate_dto){
-            return $this->prepareViewItemPaginate($reference_type, $morphs, $paginate_dto ?? $this->requestDTO(PaginateData::class));
-        },['rows_per_page' => [50]]);
-    }
+    // public function viewItemPaginate(mixed $reference_type, ?array $morphs = null, ?PaginateData $paginate_dto = null): array{
+    //     return $this->viewEntityResource(function() use ($reference_type, $morphs, $paginate_dto){
+    //         return $this->prepareViewItemPaginate($reference_type, $morphs, $paginate_dto ?? $this->requestDTO(PaginateData::class));
+    //     },['rows_per_page' => [50]]);
+    // }
 
-    public function prepareFindItem(?array $attributes = null): mixed{
-        $attributes ??= request()->all();
-        $item = $this->item()->conditionals($this->mergeCondition([]))
-            ->when(isset($attributes['transaction_id']), function ($query) use ($attributes) {
-                $query->with([
-                    'cardStock' => function ($query) use ($attributes) {
-                        $query->with([
-                            'stockMovements' => function ($query) use ($attributes) {
-                                $query->with(['batchMovements.batch'])
-                                    ->when(isset($attributes['direction']), function ($query) use ($attributes) {
-                                        $query->where('direction', $attributes['direction']);
-                                    });
-                            }
-                        ])->where('transaction_id', $attributes['transaction_id']);
-                    }
-                ]);
-            })
-            ->when(isset($attributes['id']), function ($query) use ($attributes) {
-                if (is_array($attributes['id']) && count($attributes['id']) > 0) {
-                    $query->whereIn('id', $attributes['id']);
-                } else {
-                    $query->where('id', $attributes['id']);
-                }
-            })
-            ->with([
-                'reference',
-                'compositions'
-            ])->orderBy('name', 'asc');
-        $attributes['response_as'] ??= 'paginate';
-        switch ($attributes['response_as']) {
-            case 'single-data' : $item = $item->first();break;
-            case 'collection'  : $item = $item->get();break;
-            case 'paginate'    : $item = $item->paginate($attributes['per_page'] ?? 10)->appends(request()->all());break;
-        }
+    // public function prepareFindItem(?array $attributes = null): mixed{
+    //     $attributes ??= request()->all();
+    //     $item = $this->item()->conditionals($this->mergeCondition([]))
+    //         ->when(isset($attributes['transaction_id']), function ($query) use ($attributes) {
+    //             $query->with([
+    //                 'cardStock' => function ($query) use ($attributes) {
+    //                     $query->with([
+    //                         'stockMovements' => function ($query) use ($attributes) {
+    //                             $query->with(['batchMovements.batch'])
+    //                                 ->when(isset($attributes['direction']), function ($query) use ($attributes) {
+    //                                     $query->where('direction', $attributes['direction']);
+    //                                 });
+    //                         }
+    //                     ])->where('transaction_id', $attributes['transaction_id']);
+    //                 }
+    //             ]);
+    //         })
+    //         ->when(isset($attributes['id']), function ($query) use ($attributes) {
+    //             if (is_array($attributes['id']) && count($attributes['id']) > 0) {
+    //                 $query->whereIn('id', $attributes['id']);
+    //             } else {
+    //                 $query->where('id', $attributes['id']);
+    //             }
+    //         })
+    //         ->with([
+    //             'reference',
+    //             'compositions'
+    //         ])->orderBy('name', 'asc');
+    //     $attributes['response_as'] ??= 'paginate';
+    //     switch ($attributes['response_as']) {
+    //         case 'single-data' : $item = $item->first();break;
+    //         case 'collection'  : $item = $item->get();break;
+    //         case 'paginate'    : $item = $item->paginate($attributes['per_page'] ?? 10)->appends(request()->all());break;
+    //     }
 
-        return static::$item_model = $item;
-    }
-
-    public function findItem(): mixed{
-        $item = $this->prepareFindItem();
-        if (!isset($item)) return null;
-        return $this->showEntityResource(function() use ($item){
-            return $item;
-        });
-    }    
+    //     return static::$item_model = $item;
+    // }
 
     public function item(mixed $conditionals = null): Builder{
         $this->booting();
-        return $this->ItemModel()->with('compositions')
-                ->when(isset(request()->warehouse_id), function ($query) {
+        return $this->ItemModel()->when(isset(request()->warehouse_id), function ($query) {
                     $warehouse = $this->{config('module-warehouse.warehouse').'Model'}()->findOrFail(request()->warehouse_id);
                     $query->whereHas('itemStock', function ($query) use ($warehouse) {
                         $query->where('warehouse_id', $warehouse->getKey())->where('warehouse_type', $warehouse->getMorphClass());
-                    })
-                    ->with([
+                    })->with([
                         'itemStock' => function ($query) use ($warehouse) {
                             $query->whereNull('funding_id')->where('warehouse_id', $warehouse->getKey())
                                 ->where('warehouse_type', $warehouse->getMorphClass());
@@ -232,6 +223,7 @@ class Item extends PackageManagement implements ContractsItem
                     $query->where('reference_type', $type);
                 })
                 ->withParameters()
-                ->conditionals($this->mergeCondition($conditionals ?? []));
+                ->conditionals($this->mergeCondition($conditionals ?? []))
+                ->orderBy('name', 'asc');
     }
 }

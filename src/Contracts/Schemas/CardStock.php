@@ -12,6 +12,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
  * @see \Hanafalah\ModuleItem\Schemas\CardStock
  * @method bool deleteCardStock()
  * @method bool prepareDeleteCardStock(? array $attributes = null)
+ * @method array storeCardStock(?CardStockData $card_stock_dto = null)
  * @method mixed getCardStock()
  * @method ?Model prepareShowCardStock(?Model $model = null, ?array $attributes = null)
  * @method array showCardStock(?Model $model = null)
@@ -22,8 +23,5 @@ use Illuminate\Pagination\LengthAwarePaginator;
 interface CardStock extends DataManagement
 {
     public function prepareStoreCardStock(CardStockData $card_stock_dto): Model;
-    public function storeCardStock(?CardStockData $card_stock_dto = null): array;
-    public function prepareViewCardStockPaginate(int $perPage = 50, array $columns = ['*'], string $pageName = 'page', ?int $page = null, ?int $total = null): LengthAwarePaginator;
     public function cardStock(mixed $conditionals = null): Builder;
-    
 }
