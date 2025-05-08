@@ -67,6 +67,24 @@ class CardStockData extends Data implements DataCardStockData{
             $data->props['prop_reference']['name'] = $reference->name ?? null;
         }
 
+        if (isset($data->props['tax'],$data->props['qty'])){
+            $data->props['total_taxs'] ??= [
+                'total' => 0,
+                'ppn' => 0
+            ];
+            $data->props['total_tax'] ??= 0;
+            if (is_array($data->props['tax'])){
+                foreach ($data->props['tax'] as $key => $tax) {
+                    $tax_sum = $tax * $data->props['qty'];
+                    $data->props['total_taxs']['total'] += $tax_sum;
+                    $data->props['total_taxs'][$key]   ??= 0;
+                    $data->props['total_taxs'][$key]    += $tax_sum;
+                }
+            }else{
+                $data->props['total_tax'] += $data->props['tax'] * $data->props['qty'];
+            }
+        }
+
         if (isset($data->props['cogs'],$data->props['qty'])){
             $data->props['total_cogs'] = $data->props['cogs'] * $data->props['qty'];
         }
