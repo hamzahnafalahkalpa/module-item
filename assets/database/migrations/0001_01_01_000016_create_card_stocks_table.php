@@ -46,7 +46,7 @@ return new class extends Migration
                 $table->timestamps();
                 $table->softDeletes();
 
-                $table->index(['item_id'], 'item_ref');
+                $table->index(['item_id'], 'cs_item_ref');
                 $table->index(['item_id', 'transaction_id'], 'cs_trx_item');
                 $table->index(['reference_type','reference_id'], 'cs_ref_item');
             });
