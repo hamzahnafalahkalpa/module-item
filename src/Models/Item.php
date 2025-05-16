@@ -9,12 +9,16 @@ use Hanafalah\ModuleService\Concerns\HasServicePrice;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Hanafalah\LaravelHasProps\Concerns\HasProps;
 use Hanafalah\LaravelSupport\Models\BaseModel;
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
 
 class Item extends BaseModel
 {
-    use HasProps, SoftDeletes, HasComposition, HasServicePrice;
+    use HasUlids, HasProps, SoftDeletes, HasComposition, HasServicePrice;
 
-    protected $list     = [
+    public $incrementing  = false;
+    protected $primaryKey = 'id';
+    protected $keyType    = 'string';
+    protected $list       = [
         'id','barcode','item_code','reference_type','reference_id',
         'name','unit_id','selling_price','coa_id','cogs','min_stock','is_using_batch',
         'status','props'
