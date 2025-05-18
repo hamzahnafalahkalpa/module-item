@@ -31,7 +31,7 @@ return new class extends Migration
             Schema::create($table_name, function (Blueprint $table) {
                 $itemStuff = app(config('database.models.ItemStuff', ItemStuff::class));
 
-                $table->id();
+                $table->ulid('id')->primary();
                 $table->string('barcode', 50)->nullable()->unique();
                 $table->string('item_code', 50)->nullable();
                 $table->string('reference_type', 50);
