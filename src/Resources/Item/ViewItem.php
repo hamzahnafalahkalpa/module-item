@@ -21,6 +21,10 @@ class ViewItem extends ApiResource
         'barcode'            => $this->barcode,
         'item_code'          => $this->item_code,
         'reference_type'     => $this->reference_type,
+        'reference' => $this->relationValidation('reference', function () {
+            $reference = $this->reference;
+            return $reference->toShowApi();
+        }),
         'margin'             => $this->margin,
         'is_using_batch'     => $this->is_using_batch == 1 ? true : false,
         'is_has_funding'     => $this->itemStock()->whereNotNull('funding_id')->first() ? true : false,
