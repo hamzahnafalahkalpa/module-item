@@ -44,6 +44,9 @@ class ViewItem extends ApiResource
                 return $item_stock->toViewApi();
             });
         }),
+        'card_stock' => $this->relationValidation('cardStock', function () {
+            return $this->cardStock->toViewApi();
+        }),
         'selling_price'    => $this->selling_price,
         'cogs'             => $this->cogs,
         'status'           => $this->status,
