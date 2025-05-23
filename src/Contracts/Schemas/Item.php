@@ -11,6 +11,7 @@ use Hanafalah\ModuleItem\Contracts\Data\ItemData;
 
 /**
  * @see \Hanafalah\ModuleItem\Schemas\Item
+ * @method self conditionals(mixed $conditionals = null)
  * @method bool deleteItem()
  * @method bool prepareDeleteItem(? array $attributes = null)
  * @method mixed getItem()
