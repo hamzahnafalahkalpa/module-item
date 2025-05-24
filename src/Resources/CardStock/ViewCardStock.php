@@ -24,17 +24,19 @@ class ViewCardStock extends ApiResource
             'transaction' => $this->relationValidation('transaction', function () {
                 return $this->transaction->toViewApi();
             }),
-            'warehouse'      => $this->prop_warehouse,
-            'tax'            => $this->tax ?? null,
-            'qty'            => floatval($this->qty),
-            'cogs'           => $this->cogs,
-            'total_qty'      => $this->total_qty ?? null,
-            'total_tax'      => $this->total_tax ?? null,
-            'total_cogs'     => $this->total_cogs ?? null,
-            'is_procurement' => $this->is_procurement ?? false,
-            'created_at'     => $this->created_at,
-            'updated_at'     => $this->updated_at,
-            'reported_at'    => $this->reported_at
+            'warehouse'         => $this->prop_warehouse,
+            'tax'               => $this->tax ?? null,
+            'qty'               => floatval($this->qty),
+            'cogs'              => $this->cogs,
+            'receive_qty'       => $this->receive_qty ?? null,
+            'total_receive_qty' => $this->total_receive_qty ?? null,
+            'total_qty'         => $this->total_qty ?? null,
+            'total_tax'         => $this->total_tax ?? null,
+            'total_cogs'        => $this->total_cogs ?? null,
+            'is_procurement'    => $this->is_procurement ?? false,
+            'created_at'        => $this->created_at,
+            'updated_at'        => $this->updated_at,
+            'reported_at'       => $this->reported_at
         ];
 
         return $arr;

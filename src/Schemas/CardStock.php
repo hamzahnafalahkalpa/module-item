@@ -124,7 +124,6 @@ class CardStock extends PackageManagement implements ContractsCardStock
 
     public function prepareStoreCardStock(CardStockData $card_stock_dto): Model{
         $card_stock  = $this->createCardStock($card_stock_dto);
-        dd($card_stock_dto);
         $this->storeMappingStockMovement($card_stock_dto, $card_stock);
         $this->fillingProps($card_stock, $card_stock_dto->props);
         $card_stock->save();
