@@ -34,7 +34,6 @@ class ShowCardStock extends ViewCardStock
         ];
 
         $arr = $this->mergeArray(parent::toArray($request), $arr);
-
         return $arr;
     }
 }

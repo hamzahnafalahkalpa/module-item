@@ -35,6 +35,7 @@ class ViewItem extends ApiResource
                 return $composition->toViewApi();
             });
         }),
+        'unit_id'     => $this->unit_id,
         'unit'        => $this->prop_unit,
         'item_stock'  => $this->relationValidation('itemStock', function () {
             return $this->itemStock->toViewApi();

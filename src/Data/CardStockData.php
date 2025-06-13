@@ -5,6 +5,7 @@ namespace Hanafalah\ModuleItem\Data;
 use Hanafalah\LaravelSupport\Supports\Data;
 use Hanafalah\ModuleItem\Contracts\Data\CardStockData as DataCardStockData;
 use Hanafalah\ModuleItem\Contracts\Data\CardStockPropsData;
+use Hanafalah\ModuleItem\Contracts\Data\ItemData;
 use Hanafalah\ModuleWarehouse\Contracts\Data\StockMovementData;
 use Hanafalah\ModuleWarehouse\Data\StockMovementData as DataStockMovementData;
 use Spatie\LaravelData\Attributes\DataCollectionOf;
@@ -35,6 +36,10 @@ class CardStockData extends Data implements DataCardStockData{
     #[MapInputName('item_id')]
     #[MapName('item_id')]
     public mixed $item_id;
+
+    #[MapInputName('item')]
+    #[MapName('item')]
+    public ?ItemData $item;
 
     #[MapInputName('stock_movement')]
     #[MapName('stock_movement')]
