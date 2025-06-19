@@ -23,7 +23,7 @@ class ShowCardStock extends ViewCardStock
                 });
             }),
             'item' => $this->relationValidation('item', function () {
-                return $this->item->toViewApi();
+                return $this->item->toShowApi();
             }),
             'goods_receipt_unit' => $this->relationValidation('goodsReceiptUnit', function () {
                 return $this->goodsReceiptUnit->toShowApi();
