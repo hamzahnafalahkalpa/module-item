@@ -2,9 +2,9 @@
 
 namespace Hanafalah\ModuleItem\Contracts\Schemas;
 
+use Hanafalah\LaravelSupport\Contracts\Schemas\Unicode;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
-use Hanafalah\LaravelSupport\Contracts\Supports\DataManagement;
 use Hanafalah\ModuleItem\Contracts\Data\ItemStuffData;
 use Illuminate\Database\Eloquent\Model;
 
@@ -21,7 +21,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method array viewItemStuffPaginate(?PaginateData $paginate_dto = null)
  * @method array storeItemStuff(? ItemStuffData $project_dto = null);
  */
-interface ItemStuff extends DataManagement
+interface ItemStuff extends Unicode
 {
     public function prepareStoreItemStuff(ItemStuffData $item_stuff_dto): Model;
     public function itemStuff(mixed $conditionals = null): Builder;    

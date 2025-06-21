@@ -3,9 +3,9 @@
 namespace Hanafalah\ModuleItem\Resources\ItemStuff;
 
 use Illuminate\Http\Request;
-use Hanafalah\LaravelSupport\Resources\Unicode\ViewUnicode;
+use Hanafalah\LaravelSupport\Resources\Unicode\ShowUnicode;
 
-class ViewItemStuff extends ViewUnicode
+class ShowItemStuff extends ViewItemStuff
 {
   /**
    * Transform the resource into an array.
@@ -16,7 +16,8 @@ class ViewItemStuff extends ViewUnicode
   public function toArray(Request $request): array
   {
     $arr = [];
-    $arr = $this->mergeArray(parent::toArray($request), $arr);
+    $show = $this->resolveNow(new ShowUnicode($this));
+    $arr = $this->mergeArray(parent::toArray($request), $show, $arr);
     return $arr;
   }
 }

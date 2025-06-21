@@ -2,4 +2,6 @@
 
 namespace Hanafalah\ModuleItem\Contracts\Data;
 
-interface ItemStuffData{}
+use Hanafalah\LaravelSupport\Contracts\Data\UnicodeData;
+
+interface ItemStuffData extends UnicodeData{}
