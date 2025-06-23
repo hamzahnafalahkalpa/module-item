@@ -42,7 +42,7 @@ class GoodsReceiptUnitData extends Data implements DataItemData{
             'name'  => $data->unit['name'] ?? null
         ];
         if (isset($data->props['props_unit']['id'])){
-            $unit = self::new()->ItemStuffModel()->findOrFail($data->props['props_unit']['id']);
+            $unit = self::new()->ItemStuffModel()->withoutGlobalScopes()->findOrFail($data->props['props_unit']['id']);
             $data->props['props_unit']['flag']   = $unit->flag;
             $data->props['props_unit']['name'] ??= $unit->name;
         }

@@ -15,7 +15,7 @@ class Composition extends PackageManagement implements ContractsComposition
     public static $composition_model;
 
     public function prepareStoreComposition(CompositionData $composition_dto){
-        $itemStuff = $this->ItemStuffModel()->find($composition_dto->unit_id);
+        $itemStuff = $this->ItemStuffModel()->withoutGlobalScope('flag')->find($composition_dto->unit_id);
 
         $create = [
             'name'       => $composition_dto->name,

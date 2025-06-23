@@ -92,14 +92,14 @@ class ItemData extends Data implements DataItemData{
             'name'  => null
         ];
         if (isset($data->unit_id)) {
-            $item_stuff = self::new()->ItemStuffModel()->findOrFail($data->unit_id);
+            $item_stuff = self::new()->ItemStuffModel()->withoutGlobalScopes()->findOrFail($data->unit_id);
             $data->props['prop_unit'] = [
                 'id'    => $item_stuff->getKey(),
                 'name'  => $item_stuff->name
             ];
         }else{
             if (isset($data->unit,$data->unit['name'])){
-                $unit = self::new()->ItemStuffModel()->firstOrCreate([
+                $unit = self::new()->ItemStuffModel()->withoutGlobalScopes()->firstOrCreate([
                     'name' => $data->unit['name'],
                     'flag' => 'UnitSale'
                 ]);
@@ -111,7 +111,7 @@ class ItemData extends Data implements DataItemData{
         }
 
         if (isset($item_dto->net_unit_id)) {
-            $item_stuff = self::new()->ItemStuffModel()->findOrFail($item_dto->net_unit_id);
+            $item_stuff = self::new()->ItemStuffModel()->withoutGlobalScopes()->findOrFail($item_dto->net_unit_id);
             $data->props['prop_net_unit'] = [
                 'id'    => $item_stuff->getKey(),
                 'name'  => $item_stuff->name
