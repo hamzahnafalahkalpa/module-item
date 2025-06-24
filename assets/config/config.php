@@ -6,6 +6,7 @@ use Hanafalah\ModuleItem\{
 };
 
 return [
+    'namespace' => 'Hanafalah\ModuleItem',
     'app' => [
         'contracts' => [
         ],
