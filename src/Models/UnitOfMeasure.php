@@ -3,9 +3,8 @@
 namespace Hanafalah\ModuleItem\Models;
 
 use Hanafalah\ModuleItem\Resources\UnitOfMeasure\{ShowUnitOfMeasure, ViewUnitOfMeasure};
-use Hanafalah\LaravelSupport\Models\Unicode\Unicode;
 
-class UnitOfMeasure extends Unicode
+class UnitOfMeasure extends ItemStuff
 {
     protected $table = 'unicodes';
 

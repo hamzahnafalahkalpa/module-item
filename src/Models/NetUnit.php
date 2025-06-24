@@ -3,9 +3,8 @@
 namespace Hanafalah\ModuleItem\Models;
 
 use Hanafalah\ModuleItem\Resources\NetUnit\{ShowNetUnit, ViewNetUnit};
-use Hanafalah\LaravelSupport\Models\Unicode\Unicode;
 
-class NetUnit extends Unicode
+class NetUnit extends ItemStuff
 {
     protected $table = 'unicodes';
 

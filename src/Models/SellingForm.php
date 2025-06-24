@@ -3,9 +3,8 @@
 namespace Hanafalah\ModuleItem\Models;
 
 use Hanafalah\ModuleItem\Resources\SellingForm\{ShowSellingForm, ViewSellingForm};
-use Hanafalah\LaravelSupport\Models\Unicode\Unicode;
 
-class SellingForm extends Unicode
+class SellingForm extends ItemStuff
 {
     protected $table = 'unicodes';
 
