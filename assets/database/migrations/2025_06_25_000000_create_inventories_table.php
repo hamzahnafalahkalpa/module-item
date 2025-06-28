@@ -47,10 +47,8 @@ return new class extends Migration
                       ->nullable()->index()->constrained()
                       ->cascadeOnUpdate()->nullOnDelete();
 
-                $table->string('serial_number', 255)->default('')->nullable(false);
                 $table->string('model_name', 255)->default('')->nullable(false);
                 $table->text('description')->nullable();
-
                 $table->json('props')->nullable();
                 $table->timestamps();
                 $table->softDeletes();

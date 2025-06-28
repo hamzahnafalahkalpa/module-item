@@ -15,22 +15,24 @@ class Composition extends PackageManagement implements ContractsComposition
     public static $composition_model;
 
     public function prepareStoreComposition(CompositionData $composition_dto){
-        $itemStuff = $this->ItemStuffModel()->withoutGlobalScope('flag')->find($composition_dto->unit_id);
-
-        $create = [
+        $add = [
             'name'       => $composition_dto->name,
             'unit_scale' => $composition_dto->unit_scale,
             'unit_id'    => $composition_dto->unit_id,
-            'unit_name'  => $itemStuff->name
+            'unit_name'  => $composition_dto->unit_name
         ];
 
         if (isset($composition_dto->id)) {
-            $create['id'] = $composition_dto->id;
+            $guard = ['id' => $composition_dto->id];
+            $create = [$guard,$add];
+        }else{
+            $create = [$add];
         }
 
-        $composition = $this->composition()->updateOrCreate($create);
-        static::$composition_model = $composition;
-        return $composition;
+        $composition = $this->composition()->updateOrCreate(...$create);
+        $this->fillingProps($composition,$composition_dto->props);
+        $composition->save();
+        return static::$composition_model = $composition;
     }
 
     public function composition(mixed $conditionals = null): Builder{

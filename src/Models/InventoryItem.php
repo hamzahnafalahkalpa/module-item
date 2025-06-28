@@ -22,12 +22,14 @@ class InventoryItem extends BaseModel
         'id', 
         'name', 
         'flag',
+        'label',
         'props'
     ];
 
     protected $casts = [
         'name'                 => 'string',
         'code'                 => 'string',
+        'label'                => 'string',
         'supply_category_name' => 'string',
         'brand_name'           => 'string'
     ];

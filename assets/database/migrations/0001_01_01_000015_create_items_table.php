@@ -7,6 +7,7 @@ use Hanafalah\ModuleItem\Models\{
     Item,
     ItemStuff
 };
+use Hanafalah\ModulePayment\Models\Accounting\Coa;
 
 return new class extends Migration
 {
@@ -30,6 +31,7 @@ return new class extends Migration
         if (!$this->isTableExists()) {
             Schema::create($table_name, function (Blueprint $table) {
                 $itemStuff = app(config('database.models.ItemStuff', ItemStuff::class));
+                $coa = app(config('database.models.Coa', Coa::class));
 
                 $table->ulid('id')->primary();
                 $table->string('barcode', 50)->nullable()->unique();
@@ -41,7 +43,7 @@ return new class extends Migration
 
                 $table->foreignIdFor($itemStuff::class, 'net_unit_id')
                     ->nullable()->index()->constrained($itemStuff->getTable(), $itemStuff->getKeyName())
-                    ->cascadeOnUpdate()->nullOnDelete();
+                    ->cascadeOnUpdate()->restrictOnDelete();
 
                 $table->string('netto', 100)->nullable();
                 $table->unsignedBigInteger('selling_price')->default(0);
@@ -57,11 +59,14 @@ return new class extends Migration
                     ->nullable()->index()->constrained($itemStuff->getTable(), $itemStuff->getKeyName())
                     ->cascadeOnUpdate()->nullOnDelete();
 
+                $table->foreignIdFor($coa::class)
+                    ->nullable()->index()->constrained()
+                    ->cascadeOnUpdate()->restrictOnDelete();
+
                 $table->string('status', 60)->default(0);
                 $table->json('props')->nullable();
                 $table->timestamps();
                 $table->softDeletes();
-
 
                 $table->index(['reference_id', 'reference_type'], 'item_ref');
             });

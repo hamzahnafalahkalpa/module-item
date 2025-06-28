@@ -16,7 +16,7 @@ trait HasInventory
         });
 
         static::updating(function ($query) {
-            $query->item()->updateOrCreate([
+            $query->inventory()->updateOrCreate([
                 'reference_id'   => $query->getKey(),
                 'reference_type' => $query->getMorphClass()
             ], [

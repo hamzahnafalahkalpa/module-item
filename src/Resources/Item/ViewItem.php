@@ -21,20 +21,11 @@ class ViewItem extends ApiResource
         'barcode'            => $this->barcode,
         'item_code'          => $this->item_code,
         'reference_type'     => $this->reference_type,
-        'reference' => $this->relationValidation('reference', function () {
-            $reference = $this->reference;
-            return $reference->toShowApi();
-        }),
+        'reference'          => $this->prop_reference,
         'margin'             => $this->margin,
         'is_using_batch'     => $this->is_using_batch == 1 ? true : false,
         'is_has_funding'     => $this->itemStock()->whereNotNull('funding_id')->first() ? true : false,
-        'is_has_composition' => $this->is_has_composition ?? false,
-        'composition_total'  => $this->composition_total ?? 0,
-        'compositions'       => $this->relationValidation('compositions', function () {
-            return $this->compositions->transform(function ($composition) {
-                return $composition->toViewApi();
-            });
-        }),
+        'compositions'       => $this->prop_compositions,
         'unit_id'     => $this->unit_id,
         'unit'        => $this->prop_unit,
         'item_stock'  => $this->relationValidation('itemStock', function () {

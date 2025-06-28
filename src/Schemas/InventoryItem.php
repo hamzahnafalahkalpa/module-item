@@ -24,28 +24,28 @@ class InventoryItem extends BaseModuleItem implements ContractsInventoryItem
         ]
     ];
 
-    public function prepareStoreInventoryItem(InventoryItemData $unicode_dto): Model{            
-        $add = [
-            'name' => $unicode_dto->name,
-            'flag' => $unicode_dto->flag,
-            'label' => $unicode_dto->label
-        ];
-        if (isset($unicode_dto->id)){
-            $guard  = ['id' => $unicode_dto->id];
-            $create = [$guard,$add];
-        }else{
-            $create = [$add];
-        }
-        $unicode = $this->usingEntity()->firstOrCreate(...$create);
-        $this->fillingProps($unicode, $unicode_dto->props);
-        $unicode->save();
-        return static::$inventory_item_model = $unicode;
+    public function prepareStore(InventoryItemData $inventory_item_dto){
+        return $this->prepareStoreInventoryItem($inventory_item_dto);
     }
 
-    public function unicode(mixed $conditionals = null): Builder{
+    public function prepareStoreInventoryItem(InventoryItemData $inventory_item_dto): Model{            
+        $add = [
+            'name'  => $inventory_item_dto->name,
+            'flag'  => $inventory_item_dto->flag,
+            'label' => $inventory_item_dto->label
+        ];
+        $guard  = ['id' => $inventory_item_dto->id];
+        $create = [$guard,$add];
+        $inventory_item = $this->usingEntity()->firstOrCreate(...$create);
+        $this->fillingProps($inventory_item, $inventory_item_dto->props);
+        $inventory_item->save();
+        return static::$inventory_item_model = $inventory_item;
+    }
+
+    public function inventoryItem(mixed $conditionals = null): Builder{
         return parent::generalSchemaModel($conditionals)->when(isset(request()->flag),function($query){
             return $query->flagIn(request()->flag);
-        })->whereNull('parent_id');
+        });
     }
 
     //OVERIDING DATA MANAGEMENT
@@ -56,6 +56,6 @@ class InventoryItem extends BaseModuleItem implements ContractsInventoryItem
     }
 
     public function generalSchemaModel(mixed $conditionals = null): Builder{
-        return $this->unicode($conditionals);
+        return $this->inventoryItem($conditionals);
     }
 }

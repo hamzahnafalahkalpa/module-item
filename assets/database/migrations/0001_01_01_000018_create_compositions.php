@@ -29,7 +29,7 @@ return new class extends Migration
             Schema::create($table_name, function (Blueprint $table) {
                 $itemStuff = app(config('database.models.ItemStuff', ItemStuff::class));
 
-                $table->id();
+                $table->ulid('id')->primary();
                 $table->string('name')->nullable(false);
                 $table->unsignedInteger('unit_scale')->default(0)->nullable(false);
                 $table->foreignIdFor($itemStuff::class, 'unit_id')

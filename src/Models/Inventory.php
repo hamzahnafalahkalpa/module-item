@@ -35,26 +35,38 @@ class Inventory extends BaseModel
     ];
 
     protected $casts = [
-        'inventory_code' => 'string',
-        'name' => 'string',
-        'brand_name' => 'string',
+        'inventory_code'       => 'string',
+        'name'                 => 'string',
+        'brand_name'           => 'string',
         'supply_category_name' => 'string',
-        'model_name' => 'string'
+        'model_name'           => 'string'
     ];
 
     public function getPropsQuery(): array{
         return [
-            'brand_name' => 'props->prop_brand->name',
+            'brand_name'           => 'props->prop_brand->name',
             'supply_category_name' => 'props->prop_supply_category->name'
         ];
     }
 
     public function viewUsingRelation(): array{
-        return [];
+        return ['item.itemStock', 'reference'];
     }
 
     public function showUsingRelation(): array{
-        return [];
+        return [
+            'reference',
+            'item' => function ($query) {
+                $query->with([
+                    'itemStock' => function ($query) {
+                        $query->with([
+                            'childs.stockBatches.batch',
+                            'stockBatches.batch'
+                        ]);
+                    }
+                ]);
+            }
+        ];
     }
 
     public function getViewResource(){
@@ -69,4 +81,5 @@ class Inventory extends BaseModel
     public function supplyCategory(){return $this->belongsToModel('SupplyCategory');}
     public function inventoryAsset(){return $this->hasOneModel('InventoryAsset');}
     public function inventoryAssets(){return $this->hasManyModel('InventoryAsset');}
+    public function reference(){return $this->morphTo();}
 }

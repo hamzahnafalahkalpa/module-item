@@ -1,10 +1,10 @@
 <?php
 
-namespace Hanafalah\ModuleItem\Resources\InventoryItem;
+namespace Hanafalah\ModuleItem\Resources\CompositionUnit;
 
 use Hanafalah\LaravelSupport\Resources\ApiResource;
 
-class ViewInventoryItem extends ApiResource
+class ViewCompositionUnit extends ApiResource
 {
   /**
    * Transform the resource into an array.
@@ -14,12 +14,7 @@ class ViewInventoryItem extends ApiResource
    */
   public function toArray(\Illuminate\Http\Request $request): array
   {
-    $arr = [
-      'id'    => $this->id,
-      'name'  => $this->name,
-      'flag'  => $this->flag,
-      'label' => $this->label,
-    ];
+    $arr = parent::toArray($request);
     return $arr;
   }
 }

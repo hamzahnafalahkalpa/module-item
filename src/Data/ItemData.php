@@ -4,6 +4,7 @@ namespace Hanafalah\ModuleItem\Data;
 
 use Hanafalah\LaravelSupport\Supports\Data;
 use Hanafalah\ModuleItem\Contracts\Data\ItemData as DataItemData;
+use Illuminate\Database\Eloquent\Model;
 use Spatie\LaravelData\Attributes\DataCollectionOf;
 use Spatie\LaravelData\Attributes\MapInputName;
 use Spatie\LaravelData\Attributes\MapName;
@@ -16,6 +17,18 @@ class ItemData extends Data implements DataItemData{
     #[MapInputName('name')]
     #[MapName('name')]
     public mixed $name;
+
+    #[MapInputName('reference_type')]
+    #[MapName('reference_type')]
+    public ?string $reference_type = null;
+
+    #[MapInputName('reference_id')]
+    #[MapName('reference_id')]
+    public mixed $reference_id = null;
+
+    #[MapInputName('reference_model')]
+    #[MapName('reference_model')]
+    public ?Model $reference_model = null;
 
     #[MapInputName('barcode')]
     #[MapName('barcode')]
@@ -48,6 +61,10 @@ class ItemData extends Data implements DataItemData{
     #[MapInputName('cogs')]
     #[MapName('cogs')]
     public ?int $cogs = 0;
+
+    #[MapInputName('selling_price')]
+    #[MapName('selling_price')]
+    public ?int $selling_price = 0;
 
     #[MapInputName('margin')]
     #[MapName('margin')]
@@ -82,66 +99,67 @@ class ItemData extends Data implements DataItemData{
     #[MapName('props')]
     public ?array $props = [];
 
+    public static function before(array &$attributes){
+        if (isset($attributes['reference_model'])){
+            $model = $attributes['reference_model'];
+            $attributes['reference_type'] = $model->getMorphClass();
+            $attributes['reference_id'] = $model->getKey();
+        }
+    }
+
     public static function after(ItemData $data): ItemData{
+        $new = static::new();
+        $props = &$data->props;
+
         $data->props['prop_unit'] = [
             'id'    => null,
             'name'  => null
         ];
-        $data->props['prop_net_unit'] = [
-            'id'    => null,
-            'name'  => null
-        ];
-        if (isset($data->unit_id)) {
-            $item_stuff = self::new()->ItemStuffModel()->withoutGlobalScopes()->findOrFail($data->unit_id);
-            $data->props['prop_unit'] = [
-                'id'    => $item_stuff->getKey(),
-                'name'  => $item_stuff->name
-            ];
-        }else{
-            if (isset($data->unit,$data->unit['name'])){
-                $unit = self::new()->ItemStuffModel()->withoutGlobalScopes()->firstOrCreate([
-                    'name' => $data->unit['name'],
-                    'flag' => 'UnitSale'
-                ]);
-                $data->props['prop_unit'] = [
-                    'id'    => $unit->getKey(),
-                    'name'  => $unit->name
-                ];
-            }
-        }
+        
+        self::createUnitSale($new,$data,$props);
+        self::createNetUnit($new,$data,$props);
 
-        if (isset($item_dto->net_unit_id)) {
-            $item_stuff = self::new()->ItemStuffModel()->withoutGlobalScopes()->findOrFail($item_dto->net_unit_id);
-            $data->props['prop_net_unit'] = [
-                'id'    => $item_stuff->getKey(),
-                'name'  => $item_stuff->name
-            ];
+        $coa = $new->CoaModel();
+        $coa = (isset($data->coa_id)) ? $coa->findOrFail($data->coa_id) : $coa;
+        $props['prop_coa'] = $coa->toViewApi()->resolve();
+
+        $data->selling_price ??= $data->cogs + $data->cogs * $data->margin/100;
+        return $data;
+    }
+
+    protected static function createNetUnit($new,$data,&$props){
+        $item_stuff = $new->NetUnitModel();
+        if (isset($data->net_unit_id)) {
+            $item_stuff = $item_stuff->withoutGlobalScopes()->findOrFail($data->net_unit_id);
         }else{
             if (isset($data->net_unit,$data->net_unit['name'])){
-                $unit = self::new()->ItemStuffModel()->firstOrCreate([
+                $item_stuff = $item_stuff->firstOrCreate([
                     'name' => $data->net_unit['name'],
                     'flag' => 'NetUnit'
                 ]);
-                $data->props['prop_net_unit'] = [
-                    'id'    => $unit->getKey(),
-                    'name'  => $unit->name
-                ];
             }
         }
-
-        $data->props['prop_coa'] = [
-            'id'    => null,
-            'code'  => null,
-            'name'  => null
+        $props['prop_net_unit'] = [
+            'id'    => $item_stuff->getKey(),
+            'name'  => $item_stuff->name
         ];
-        if (isset($data->coa_id)) {
-            $coa = self::new()->CoaModel()->findOrFail($data->coa_id);
-            $data->props['prop_coa'] = [
-                'id'    => $coa->getKey(),
-                'code'  => $coa->code,
-                'name'  => $coa->name
-            ];
+    }
+
+    protected static function createUnitSale($new,$data,&$props){
+        $item_stuff = $new->SellingFormModel();
+        if (isset($data->unit_id)) {
+            $item_stuff = $item_stuff->withoutGlobalScopes()->findOrFail($data->unit_id);
+        }else{
+            if (isset($data->unit,$data->unit['name'])){
+                $item_stuff = $item_stuff->firstOrCreate([
+                    'name' => $data->unit['name'],
+                    'flag' => 'UnitSale'
+                ]);
+            }
         }
-        return $data;
+        $props['prop_unit'] = [
+            'id'    => $item_stuff->getKey(),
+            'name'  => $item_stuff->name
+        ];
     }
 }

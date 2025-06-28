@@ -28,5 +28,13 @@ return [
     'update_price_from_procurement' => [
         'enable' => true,
         'method' => 'AVERAGE'
+    ],
+    'inventory_types' => [
+        'office_supply' => [
+            'schema' => 'OfficeSupply'
+        ],
+        'stuff_supply' => [
+            'schema' => 'StuffSupply'
+        ]
     ]
 ];
