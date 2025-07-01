@@ -15,7 +15,6 @@ class ItemStock extends Stock implements ContractsItemStock
     public static $item_stock_model;
 
     public function prepareStoreItemStock(ItemStockData $item_stock_dto): Model{
-        dd($item_stock_dto);
         return parent::prepareStoreStock($item_stock_dto);
     }
 }

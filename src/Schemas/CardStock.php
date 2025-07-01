@@ -13,6 +13,7 @@ use Hanafalah\LaravelSupport\Supports\PackageManagement;
 use Hanafalah\ModuleItem\Contracts\Data\CardStockData;
 use Hanafalah\ModuleTax\Concerns\HasTaxCalculation;
 use Hanafalah\ModuleWarehouse\Contracts\Data\StockMovementData;
+use Hanafalah\ModuleWarehouse\Enums\MainMovement\Direction;
 
 class CardStock extends PackageManagement implements ContractsCardStock
 {
@@ -36,7 +37,7 @@ class CardStock extends PackageManagement implements ContractsCardStock
         } else {
             $create = [$add];
         }
-        $card_stock = $this->CardStockModel()->firstOrCreate(...$create);
+        $card_stock = $this->usingEntity()->firstOrCreate(...$create);
         // if (isset($props['warehouse_id'])){
         //     $warehouse = $this->{config('module-item.warehouse').'Model'}()->findOrFail($props['warehouse_id']);
         //     $props['prop_warehouse'] = [
@@ -60,9 +61,9 @@ class CardStock extends PackageManagement implements ContractsCardStock
 
     protected function createGoodsReceiptUnit(StockMovementData &$stock_movement){
         $goods = $this->schemaContract('goods_receipt_unit')->prepareStoreGoodsReceiptUnit($stock_movement->goods_receipt_unit);
-        if (isset($stock_movement->props['cogs'])) {
-            $stock_movement->props['total_cogs'] = $total_cogs = $stock_movement->cogs * $goods->unit_qty;;
-            $goods->cogs  = $stock_movement->cogs;
+        if (isset($stock_movement->props->cogs)) {
+            $stock_movement->props->props['total_cogs'] = $total_cogs = $stock_movement->props->cogs * $goods->unit_qty;;
+            $goods->cogs  = $stock_movement->props->cogs;
             $goods->total_cogs = $total_cogs;
             $goods->save();
         }
@@ -83,9 +84,17 @@ class CardStock extends PackageManagement implements ContractsCardStock
             } else {
                 $card_stock_dto->total_qty += $stock_movement_dto->qty ?? 0;
             }
+            if ($stock_movement_dto->direction == Direction::IN->value) {
+                $card_stock_dto->receive_qty = $stock_movement_dto->qty ?? 0;
+            }
             // if (isset($stock_movement_dto->item_stock_id)) $this->initFunding($stock_movement_dto);                
             
             $stock_movement_dto->card_stock_id = $card_stock->getKey();
+            if (isset($stock_movement_dto->item_stock)){
+                $item_stock_dto = &$stock_movement_dto->item_stock;
+                $item_stock_dto->procurement_id ??= $card_stock->reference_id;
+                $item_stock_dto->procurement_type ??= $card_stock->reference_type;
+            }
             $stock_movement_model = $this->schemaContract('stock_movement')->prepareStoreStockMovement($stock_movement_dto);
             if (isset($stock_movement_dto->props->cogs)) {
                 $stock_movement_model->cogs       = $stock_movement_dto->props->cogs;
@@ -116,7 +125,11 @@ class CardStock extends PackageManagement implements ContractsCardStock
         $card_stock  = $this->createCardStock($card_stock_dto);
         $this->storeMappingStockMovement($card_stock_dto, $card_stock);
         $this->fillingProps($card_stock, $card_stock_dto->props);
-
+        $card_stock->receive_qty = floatval($card_stock_dto->receive_qty);
+        $card_stock->request_qty = floatval($card_stock_dto->request_qty);
+        $card_stock->total_qty   = $card_stock_dto->total_qty;
+        $card_stock->total_cogs  = $card_stock_dto->total_cogs;
+        $card_stock->total_tax   = $card_stock_dto->total_tax;
         $card_stock->save();
         return static::$card_stock_model = $card_stock;
     }

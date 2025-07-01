@@ -21,15 +21,13 @@ class ViewCardStock extends ApiResource
             'stock_movement'  => $this->relationValidation('stockMovement', function () {
                 return $this->stockMovement->toViewApi()->resolve();
             }),
-            'transaction' => $this->relationValidation('transaction', function () {
-                return $this->transaction->toViewApi()->resolve();
-            }),
+            'transaction'       => $this->prop_transaction,
             'warehouse'         => $this->prop_warehouse,
             'tax'               => $this->tax ?? null,
             'qty'               => floatval($this->qty),
             'cogs'              => $this->cogs,
             'receive_qty'       => $this->receive_qty ?? null,
-            'request_qty'       => $this->receive_qty ?? null,
+            'request_qty'       => $this->request_qty ?? null,
             'total_qty'         => $this->total_qty ?? null,
             'total_tax'         => $this->total_tax ?? null,
             'total_cogs'        => $this->total_cogs ?? null,

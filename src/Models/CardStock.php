@@ -24,7 +24,7 @@ class CardStock extends BaseModel
     protected $list       = [
         'id', 'parent_id', 'reference_type', 'reference_id', 
         'item_id', 'transaction_id', 'reported_at', 
-        'total_receive_qty', 'total_request_qty',
+        'receive_qty', 'request_qty',
         'total_qty', 'total_tax', 'total_cogs'
     ];
     protected $show       = [];

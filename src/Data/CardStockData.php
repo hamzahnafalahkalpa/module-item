@@ -74,15 +74,27 @@ class CardStockData extends Data implements DataCardStockData{
     #[MapName('props')]
     public ?CardStockPropsData $props = null;
 
+    public static function before(array &$attributes){
+        $new = self::new();
+        $item = $new->ItemModel()->findOrFail($attributes['item_id']);
+        $attributes['prop_item'] = $item->toViewApi()->resolve();
+
+        $attributes['stock_movements'] ??= [];
+        if (isset($attributes['stock_movement'])) {
+            $attributes['stock_movements'][] = $attributes['stock_movement'];
+            unset($attributes['stock_movement']);
+        }
+
+        foreach ($attributes['stock_movements'] as &$stock_movement) {
+            $stock_movement['qty_unit_id'] ??= $item->unit_id;
+        }
+    }
+
     public static function after(CardStockData $data): CardStockData{
         $new = self::new();
 
         $props = &$data->props->props;
 
-        $item = $new->ItemModel();
-        if (isset($data->item_id)) $item = $item->findOrFail($data->item_id);
-        $props['prop_item'] = $item->toViewApi()->resolve();
-        
         if (isset($data->reference_type)){
             $reference = $new->{$data->reference_type.'Model'}();
             if (isset($data->reference_id)) $reference = $reference->findOrFail($data->reference_id);
