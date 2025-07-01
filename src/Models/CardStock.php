@@ -23,7 +23,9 @@ class CardStock extends BaseModel
     protected $keyType    = 'string';
     protected $list       = [
         'id', 'parent_id', 'reference_type', 'reference_id', 
-        'item_id', 'transaction_id', 'reported_at'
+        'item_id', 'transaction_id', 'reported_at', 
+        'total_receive_qty', 'total_request_qty',
+        'total_qty', 'total_tax', 'total_cogs'
     ];
     protected $show       = [];
     protected $casts      = [
@@ -264,6 +266,6 @@ class CardStock extends BaseModel
             'item_id',
             'item_id',
             'reference_id'
-        )->whereRaw($transactionItemTable . '.item_type = ' . $this->ItemModel()->getTable() . '.reference_type AND ' . $transactionItemTable . '.transaction_id = "' . $this->transaction_id . '"');
+        )->whereRaw($transactionItemTable . ".item_type = ".$this->ItemModel()->getTable() .".reference_type AND " . $transactionItemTable . ".transaction_id = '" . $this->transaction_id . "'");
     }
 }

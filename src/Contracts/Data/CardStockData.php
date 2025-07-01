@@ -2,4 +2,6 @@
 
 namespace Hanafalah\ModuleItem\Contracts\Data;
 
-interface CardStockData{}
+use Spatie\LaravelData\Contracts\BaseData;
+
+interface CardStockData extends BaseData{}

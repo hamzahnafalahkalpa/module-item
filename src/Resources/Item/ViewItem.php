@@ -29,15 +29,15 @@ class ViewItem extends ApiResource
         'unit_id'     => $this->unit_id,
         'unit'        => $this->prop_unit,
         'item_stock'  => $this->relationValidation('itemStock', function () {
-            return $this->itemStock->toViewApi();
+            return $this->itemStock->toViewApi()->resolve();
         }),
         'item_stocks'  => $this->relationValidation('itemStocks', function () {
             return $this->itemStocks->transform(function ($item_stock) {
-                return $item_stock->toViewApi();
+                return $item_stock->toViewApi()->resolve();
             });
         }),
         'card_stock' => $this->relationValidation('cardStock', function () {
-            return $this->cardStock->toViewApi();
+            return $this->cardStock->toViewApi()->resolve();
         }),
         'selling_price'    => $this->selling_price,
         'cogs'             => $this->cogs,

@@ -31,11 +31,31 @@ class CardStockData extends Data implements DataCardStockData{
 
     #[MapInputName('transaction_id')]
     #[MapName('transaction_id')]
-    public mixed $transaction_id = null;
+    public mixed $transaction_id;
 
     #[MapInputName('item_id')]
     #[MapName('item_id')]
     public mixed $item_id;
+
+    #[MapInputName('total_qty')]
+    #[MapName('total_qty')]
+    public ?float $total_qty = 0;
+
+    #[MapInputName('receive_qty')]
+    #[MapName('receive_qty')]
+    public ?float $receive_qty = 0;
+
+    #[MapInputName('request_qty')]
+    #[MapName('request_qty')]
+    public ?float $request_qty = 0;
+
+    #[MapInputName('total_cogs')]
+    #[MapName('total_cogs')]
+    public ?int $total_cogs = 0;
+
+    #[MapInputName('total_tax')]
+    #[MapName('total_tax')]
+    public ?int $total_tax = 0;
 
     #[MapInputName('item')]
     #[MapName('item')]
@@ -55,23 +75,18 @@ class CardStockData extends Data implements DataCardStockData{
     public ?CardStockPropsData $props = null;
 
     public static function after(CardStockData $data): CardStockData{
+        $new = self::new();
+
         $props = &$data->props->props;
-        $props['prop_item'] = [
-            'id'    => $data->item_id ?? null,
-            'name'  => null
-        ];
-        if (isset($props['prop_item']['id']) && !isset($props['prop_item']['name'])){
-            $item = self::new()->ItemModel()->findOrFail($props['prop_item']['id']);
-            $props['prop_item']['name'] = $item->name;
-        }
+
+        $item = $new->ItemModel();
+        if (isset($data->item_id)) $item = $item->findOrFail($data->item_id);
+        $props['prop_item'] = $item->toViewApi()->resolve();
         
-        $props['prop_reference'] = [
-            'id'    => $data->reference_id ?? null,
-            'name'  => null
-        ];
-        if (isset($props['prop_reference']['id']) && !isset($props['prop_reference']['name'])){
-            $reference = self::new()->{$data->reference_type.'Model'}()->findOrFail($props['prop_reference']['id']);
-            $props['prop_reference']['name'] = $reference->name ?? null;
+        if (isset($data->reference_type)){
+            $reference = $new->{$data->reference_type.'Model'}();
+            if (isset($data->reference_id)) $reference = $reference->findOrFail($data->reference_id);
+            $props['prop_reference'] = $reference->toViewApi()->resolve();
         }
 
         if (isset($props['tax'],$props['qty'])){
