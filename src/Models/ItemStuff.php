@@ -9,6 +9,14 @@ class ItemStuff extends Unicode
 {
     protected $table = 'unicodes';
 
+    protected static function booted(): void
+    {
+        parent::booted();
+        static::creating(function ($query) {
+            $query->general_flag = 'ItemStuff';
+        });
+    }
+
     public function getViewResource(){return ViewItemStuff::class;}
     public function getShowResource(){return ShowItemStuff::class;}
 }
