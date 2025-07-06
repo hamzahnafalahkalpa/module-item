@@ -4,6 +4,7 @@
     "type": "library",
     "require": {
         "hanafalah/laravel-support": "1.x-dev as 1.0",
+        "hanafalah/module-service": "1.x-dev as 1.0",
         "hanafalah/module-warehouse": "1.x-dev as 1.0",
         "hanafalah/module-transaction": "1.x-dev as 1.0",
         "hanafalah/module-distribution": "1.x-dev as 1.0"

@@ -2,8 +2,12 @@
 
 namespace Hanafalah\ModuleItem\Concerns;
 
+use Hanafalah\ModuleService\Concerns\HasService;
+
 trait HasItem
 {
+    use HasService;
+
     public static function bootHasItem()
     {
         static::created(function ($query) {
@@ -23,7 +27,7 @@ trait HasItem
                 'name' => $query->name
             ]);
         });
-    }
+    }    
 
     public function item()
     {

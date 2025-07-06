@@ -59,13 +59,8 @@ class InventoryItem extends BaseModel
         return [];
     }
 
-    public function getViewResource(){
-        return ViewInventoryItem::class;
-    }
-
-    public function getShowResource(){
-        return ShowInventoryItem::class;
-    }
+    public function getViewResource(){return ViewInventoryItem::class;}
+    public function getShowResource(){return ShowInventoryItem::class;}
 
     public function supplyCategory(){return $this->belongsToModel('SupplyCategory');}
     public function brand(){return $this->belongsToModel('Brand');}
