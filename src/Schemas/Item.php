@@ -29,13 +29,13 @@ class Item extends PackageManagement implements ContractsItem
             'name'                => $item_dto->name,
             'unit_id'             => $item_dto->unit_id,
             'coa_id'              => $item_dto->coa_id,
-            'cogs'                => $item_dto->cogs,
+            'cogs'                => $item_dto->cogs ?? 0,
             'min_stock'           => $item_dto->min_stock ?? 150,
             'is_using_batch'      => $item_dto->is_using_batch,
             'net_unit_id'         => $item_dto->net_unit_id,
             'net_qty'             => $item_dto->net_qty,
-            'margin'              => $item_dto->margin,
-            'tax'                 => $item_dto->tax,
+            'margin'              => $item_dto->margin ?? 0,
+            'tax'                 => $item_dto->tax ?? 0,
             'netto'               => $item_dto->netto,
         ];
         if (isset($item_dto->item_code)) $add['item_code'] = $item_dto->item_code;
