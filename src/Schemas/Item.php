@@ -31,7 +31,7 @@ class Item extends PackageManagement implements ContractsItem
             'coa_id'              => $item_dto->coa_id,
             'cogs'                => $item_dto->cogs ?? 0,
             'min_stock'           => $item_dto->min_stock ?? 150,
-            'is_using_batch'      => $item_dto->is_using_batch,
+            'is_using_batch'      => $item_dto->is_using_batch ?? false,
             'net_unit_id'         => $item_dto->net_unit_id,
             'net_qty'             => $item_dto->net_qty,
             'margin'              => $item_dto->margin ?? 0,
