@@ -10,6 +10,8 @@ use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Hanafalah\LaravelHasProps\Concerns\HasProps;
 use Hanafalah\LaravelSupport\Models\BaseModel;
+use Hanafalah\ModuleWarehouse\Enums\MainMovement\Direction;
+use Hanafalah\ModuleWarehouse\Enums\MainMovement\PriceUpdateMethod;
 use Hanafalah\ModuleWarehouse\Models\Stock\MainMovement;
 
 class CardStock extends BaseModel
@@ -19,7 +21,12 @@ class CardStock extends BaseModel
     public $incrementing  = false;
     protected $primaryKey = 'id';
     protected $keyType    = 'string';
-    protected $list       = ['id', 'parent_id', 'item_id', 'transaction_id', 'reported_at'];
+    protected $list       = [
+        'id', 'parent_id', 'reference_type', 'reference_id', 
+        'item_id', 'transaction_id', 'reported_at', 
+        'receive_qty', 'request_qty',
+        'total_qty', 'total_tax', 'total_cogs'
+    ];
     protected $show       = [];
     protected $casts      = [
         'name'        => 'string',
@@ -126,7 +133,7 @@ class CardStock extends BaseModel
 
                     //UPDATING PRICE FOR PROCUREMENT CONDITION
                     if (config('module-item.update_price_from_procurement.enable', false)) {
-                        if ($stock_movement->direction == MainMovement::IN) {
+                        if ($stock_movement->direction == Direction::IN->value) {
                             $method = config('module-item.update_price_from_procurement.method');
                             if (isset($method) && isset($item) && $card_stock && $card_stock->is_procurement) {
                                 $qty       = $stock_movement->qty * $multiple;
@@ -136,13 +143,13 @@ class CardStock extends BaseModel
                                 $margin = intval($card_stock->margin ?? $stock_movement->margin ?? 0);
 
                                 switch ($method) {
-                                    case MainMovement::METHOD_AVERAGE:
+                                    case PriceUpdateMethod::AVERAGE->value:
                                         $new_cogs = ($qty_total > 0)
                                             ? ($current_stock * $item->cogs + $stock_movement->total_cogs) / $qty_total
                                             : $item->cogs;
                                     break;
-                                    case MainMovement::METHOD_MIN: $new_cogs = ($item->cogs > $cogs) ? $item->cogs : $cogs;break;
-                                    case MainMovement::METHOD_MAX: $new_cogs = ($item->cogs < $cogs) ? $cogs : $item->cogs;break;
+                                    case PriceUpdateMethod::MIN->value: $new_cogs = ($item->cogs > $cogs) ? $item->cogs : $cogs;break;
+                                    case PriceUpdateMethod::MAX->value: $new_cogs = ($item->cogs < $cogs) ? $cogs : $item->cogs;break;
                                 }
                                 $stock_movement->new_cogs          = $new_cogs;
                                 $stock_movement->new_selling_price = $new_cogs;
@@ -164,9 +171,9 @@ class CardStock extends BaseModel
     private static function calculatingStock($movement_model, $stock_model = null, $direction){
         $opening_stock = $movement_model->opening_stock;
         switch ($direction) {
-            case MainMovement::IN     : $closing = $opening_stock + $movement_model->qty;break;
-            case MainMovement::OUT    : $closing = $opening_stock - $movement_model->qty;break;
-            case MainMovement::OPNAME : $closing = $movement_model->qty;break;
+            case Direction::IN->value     : $closing = $opening_stock + $movement_model->qty;break;
+            case Direction::OUT->value    : $closing = $opening_stock - $movement_model->qty;break;
+            case Direction::OPNAME->value : $closing = $movement_model->qty;break;
         }
         $movement_model->closing_stock = $closing;
         $movement_model->save(); 
@@ -214,6 +221,24 @@ class CardStock extends BaseModel
         return $parent_movement_model;
     }
 
+    public function viewUsingRelation(): array{
+        return [
+        ];
+    }
+
+    public function showUsingRelation(): array{
+        return [
+            'goodsReceiptUnit', 
+            'stockMovements' => function ($query) {
+                $query->with([
+                    'reference',
+                    'batchMovements',
+                    'itemStock'
+                ]);
+            }
+        ];
+    }
+
     public function getShowResource(){
         return ShowCardStock::class;
     }
@@ -226,7 +251,9 @@ class CardStock extends BaseModel
     public function item(){return $this->belongsToModel('Item');}
     public function goodsReceiptUnit(){return $this->hasOneModel('GoodsReceiptUnit');}
     public function goodsReceiptUnits(){return $this->hasManyModel('GoodsReceiptUnit');}
-    public function stockMovement(){return $this->hasOneModel('StockMovement');}
+    public function stockMovement(){
+        return $this->hasOneModel('StockMovement');
+    }
     public function stockMovements(){return $this->hasManyModel('StockMovement');}
     public function transaction(){return $this->belongsToModel('Transaction');}
 
@@ -239,6 +266,6 @@ class CardStock extends BaseModel
             'item_id',
             'item_id',
             'reference_id'
-        )->whereRaw($transactionItemTable . '.item_type = ' . $this->ItemModel()->getTable() . '.reference_type AND ' . $transactionItemTable . '.transaction_id = "' . $this->transaction_id . '"');
+        )->whereRaw($transactionItemTable . ".item_type = ".$this->ItemModel()->getTable() .".reference_type AND " . $transactionItemTable . ".transaction_id = '" . $this->transaction_id . "'");
     }
 }

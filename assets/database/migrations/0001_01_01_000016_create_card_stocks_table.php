@@ -38,13 +38,22 @@ return new class extends Migration
                 $table->foreignIdFor($transaction::class)->nullable(false)
                     ->index()->constrained()->cascadeOnDelete()->cascadeOnUpdate();
 
+                $table->string('reference_type',50)->nullable();
+                $table->string('reference_id',36)->nullable();                
+                $table->decimal('receive_qty',14,6)->default(0.00)->nullable(false);
+                $table->decimal('request_qty',16,4)->default(0.00)->nullable(false);
+                $table->decimal('total_qty', 16, 4)->default(0.00)->nullable(false);
+                $table->unsignedBigInteger('total_tax')->default(0)->nullable(false);
+                $table->unsignedBigInteger('total_cogs')->default(0)->nullable(false);
+
                 $table->timestamp('reported_at')->nullable();
                 $table->json('props')->nullable();
                 $table->timestamps();
                 $table->softDeletes();
 
-                $table->index(['item_id'], 'item_ref');
+                $table->index(['item_id'], 'cs_item_ref');
                 $table->index(['item_id', 'transaction_id'], 'cs_trx_item');
+                $table->index(['reference_type','reference_id'], 'cs_ref_item');
             });
 
             Schema::table($table_name, function (Blueprint $table) {

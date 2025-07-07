@@ -30,5 +30,5 @@ class ItemHasVariant extends BaseModel{
     }
 
     public function item(){return $this->belongsToModel('Item');}
-    public function morphTo(){return $this->morphTo('variant');}
+    public function variant(){return $this->morphTo('variant');}
 }

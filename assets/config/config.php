@@ -6,13 +6,13 @@ use Hanafalah\ModuleItem\{
 };
 
 return [
-    'namespace' => 'Hanafalah\\ModuleItem',
+    'namespace' => 'Hanafalah\ModuleItem',
     'app' => [
         'contracts' => [
             //ADD YOUR CONTRACTS HERE
         ]
     ],
-    'libs' => [
+    'libs'       => [
         'model' => 'Models',
         'contract' => 'Contracts',
         'schema' => 'Schemas',
@@ -29,5 +29,13 @@ return [
     'update_price_from_procurement' => [
         'enable' => true,
         'method' => 'AVERAGE'
+    ],
+    'inventory_types' => [
+        'office_supply' => [
+            'schema' => 'OfficeSupply'
+        ],
+        'stuff_supply' => [
+            'schema' => 'StuffSupply'
+        ]
     ]
 ];

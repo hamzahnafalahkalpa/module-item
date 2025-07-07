@@ -23,33 +23,25 @@ class ShowItem extends ViewItem
             'last_selling_price' => $this->last_selling_price,
             'netto'              => $this->netto,
             'net_qty'            => $this->net_qty,
-            'net_unit'           => [
-                'net_unit_id'    => $this->net_unit_id ?? null,
-                'net_unit_name'  => $this->net_unit_name ?? null
-            ],
+            'net_unit'           => $this->prop_net_unit,
             'reference' => $this->relationValidation('reference', function () {
                 $reference = $this->reference;
-                return $reference->toShowApi();
+                return $reference->toShowApi()->resolve();
             }),
             'materials' => $this->relationValidation('materials', function () {
                 $materials = $this->materials;
                 return $materials->transform(function ($material) {
-                    return $material->toShowApi();
-                });
-            }),
-            'compositions' => $this->relationValidation('compositions', function () {
-                return $this->compositions->transform(function ($composition) {
-                    return $composition->toViewApi();
+                    return $material->toShowApi()->resolve();
                 });
             }),
             'item_stocks' => $this->relationValidation('itemStocks', function () {
                 $itemStocks = $this->itemStocks;
                 return $itemStocks->transform(function ($itemStock) {
-                    return $itemStock->toShowApi();
+                    return $itemStock->toShowApi()->resolve();
                 });
             }),
             'card_stock' => $this->relationValidation('cardStock', function () {
-                return $this->cardStock->toShowApi();
+                return $this->cardStock->toShowApi()->resolve();
             })
         ];
 
