@@ -2,4 +2,4 @@
 
 namespace Hanafalah\ModuleItem\Contracts\Data;
 
-interface SellingFormData {}
+interface SellingFormData extends ItemStuffData {}
