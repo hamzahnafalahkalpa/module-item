@@ -2,15 +2,12 @@
 
 namespace Hanafalah\ModuleItem\Schemas;
 
+use Hanafalah\ModuleItem\Contracts\Data\SellingFormData;
+use Hanafalah\ModuleItem\Contracts\Schemas\SellingForm as ContractsSellingForm;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Hanafalah\ModuleItem\{
-    Supports\BaseModuleItem
-};
-use Hanafalah\ModuleItem\Contracts\Schemas\SellingForm as ContractsSellingForm;
-use Hanafalah\ModuleItem\Contracts\Data\SellingFormData;
 
-class SellingForm extends BaseModuleItem implements ContractsSellingForm
+class SellingForm extends ItemStuff implements ContractsSellingForm
 {
     protected string $__entity = 'SellingForm';
     public static $selling_form_model;
@@ -25,21 +22,11 @@ class SellingForm extends BaseModuleItem implements ContractsSellingForm
     ];
 
     public function prepareStoreSellingForm(SellingFormData $selling_form_dto): Model{
-        $add = [
-            'name' => $selling_form_dto->name
-        ];
-        $guard  = ['id' => $selling_form_dto->id];
-        $create = [$guard, $add];
-        // if (isset($selling_form_dto->id)){
-        //     $guard  = ['id' => $selling_form_dto->id];
-        //     $create = [$guard, $add];
-        // }else{
-        //     $create = [$add];
-        // }
+        $selling_form_model = $this->prepareStoreUnicode($selling_form_dto);
+        return static::$selling_form_model = $selling_form_model;
+    }
 
-        $selling_form = $this->usingEntity()->updateOrCreate(...$create);
-        $this->fillingProps($selling_form,$selling_form_dto->props);
-        $selling_form->save();
-        return static::$selling_form_model = $selling_form;
+    public function sellingForm(mixed $conditionals = null): Builder{
+        return $this->unicode($conditionals);
     }
 }

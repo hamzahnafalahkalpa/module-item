@@ -23,12 +23,13 @@ use Illuminate\Database\Eloquent\Model;
  * @method array viewSellingFormList()
  * @method LengthAwarePaginator prepareViewSellingFormPaginate(PaginateData $paginate_dto)
  * @method array viewSellingFormPaginate(?PaginateData $paginate_dto = null)
+ * @method Model prepareStoreSellingForm(SellingFormData $selling_form_dto)
  * @method array storeSellingForm(?SellingFormData $selling_form_dto = null)
  * @method Collection prepareStoreMultipleSellingForm(array $datas)
  * @method array storeMultipleSellingForm(array $datas)
  */
 
-interface SellingForm extends DataManagement
-{
-    public function prepareStoreSellingForm(SellingFormData $selling_form_dto): Model;
+interface SellingForm extends ItemStuff{
+    public function prepareStoreSellingForm(SellingFormData $net_unit_dto): Model;
+    public function sellingForm(mixed $conditionals = null): Builder;
 }

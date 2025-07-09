@@ -28,7 +28,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method array storeMultipleNetUnit(array $datas)
  */
 
-interface NetUnit extends DataManagement
-{
+interface NetUnit extends ItemStuff{
     public function prepareStoreNetUnit(NetUnitData $net_unit_dto): Model;
+    public function netUnit(mixed $conditionals = null): Builder;
 }
