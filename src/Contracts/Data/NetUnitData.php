@@ -2,4 +2,4 @@
 
 namespace Hanafalah\ModuleItem\Contracts\Data;
 
-interface NetUnitData {}
+interface NetUnitData extends ItemStuffData {}
