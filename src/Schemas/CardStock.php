@@ -74,7 +74,7 @@ class CardStock extends PackageManagement implements ContractsCardStock
         $transaction = $card_stock->transaction;
         $props       = &$card_stock_dto->props->props;
         foreach ($card_stock_dto->stock_movements as $stock_movement_dto) {
-            $stock_movement_dto->direction ??= $props['direction'];
+            $stock_movement_dto->direction ??= $props['direction'] ?? 'REQUEST';
             // $this->isNeedParent($stock_movement_dto, $transaction);
 
             $card_stock_dto->total_qty = 0;
