@@ -16,6 +16,7 @@ class ViewCardStock extends ApiResource
     {
         $arr = [
             'id'              => $this->id,
+            'item_id'         => $this->item_id,
             'item'            => $this->prop_item,
             'reference'       => $this->prop_reference,
             'stock_movement'  => $this->relationValidation('stockMovement', function () {
