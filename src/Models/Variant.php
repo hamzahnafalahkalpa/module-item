@@ -4,11 +4,15 @@ namespace Hanafalah\ModuleItem\Models;
 
 use Hanafalah\LaravelHasProps\Concerns\HasProps;
 use Hanafalah\LaravelSupport\Models\BaseModel;
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Variant extends BaseModel{
-    use HasProps, HasProps, SoftDeletes;
+    use HasUlids, HasProps, HasProps, SoftDeletes;
 
+    public $incrementing = false;
+    protected $keyType = 'string';
+    protected $primaryKey = 'id';
     protected $list = [
         'id', 'name', 'flag', 'props'
     ];
