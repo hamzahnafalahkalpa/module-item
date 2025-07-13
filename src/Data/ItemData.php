@@ -137,6 +137,7 @@ class ItemData extends Data implements DataItemData{
                     'name' => $data->net_unit['name'],
                     'flag' => 'NetUnit'
                 ]);
+                $data->net_unit_id = $item_stuff->getKey();
             }
         }
         $props['prop_net_unit'] = [
@@ -155,6 +156,7 @@ class ItemData extends Data implements DataItemData{
                     'name' => $data->unit['name'],
                     'flag' => 'UnitSale'
                 ]);
+                $data->unit_id = $item_stuff->getKey();
             }
         }
         $props['prop_unit'] = [
