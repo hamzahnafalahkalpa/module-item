@@ -154,7 +154,7 @@ class ItemData extends Data implements DataItemData{
             if (isset($data->unit,$data->unit['name'])){
                 $item_stuff = $item_stuff->firstOrCreate([
                     'name' => $data->unit['name'],
-                    'flag' => 'UnitSale'
+                    'flag' => 'SellingForm'
                 ]);
                 $data->unit_id = $item_stuff->getKey();
             }
