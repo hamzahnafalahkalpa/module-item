@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Hanafalah\LaravelSupport\Supports\PackageManagement;
 use Hanafalah\ModuleItem\Contracts\Data\ItemData;
+use Illuminate\Support\Str;
 
 class Item extends PackageManagement implements ContractsItem
 {
@@ -24,6 +25,16 @@ class Item extends PackageManagement implements ContractsItem
     ];
 
     public function prepareStore(ItemData $item_dto): Model{
+        if (isset($item_dto->reference)){
+            $reference_type   = $item_dto->reference_type;
+            $reference_schema = config('module-item.item_reference_types.'.Str::snake($reference_type).'.schema');        
+            if (isset($reference_schema)) {
+                $schema_reference = $this->schemaContract(Str::studly($reference_schema));
+                $reference = $schema_reference->prepareStore($item_dto->reference);
+                $item_dto->reference_id = $reference->getKey();
+            }   
+        }
+
         $add = [
             'barcode'             => $item_dto->barcode,
             'name'                => $item_dto->name,
@@ -53,7 +64,7 @@ class Item extends PackageManagement implements ContractsItem
             ];
         }
 
-        $item = $this->ItemModel()->where($guard)->updateOrCreate($guard,$add);
+        $item = $this->ItemModel()->updateOrCreate($guard,$add);
         $item->last_selling_price  = $item_dto->last_selling_price ?? $item->selling_price ?? 0;
         $item->last_cogs           = $item_dto->last_cogs ?? $current_cogs ?? 0;
         if (isset($item_dto->selling_price)) $item->selling_price = $item_dto->selling_price ?? 0;        

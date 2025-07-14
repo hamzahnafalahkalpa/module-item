@@ -11,6 +11,7 @@ use Hanafalah\ModuleWarehouse\Data\StockMovementData as DataStockMovementData;
 use Spatie\LaravelData\Attributes\DataCollectionOf;
 use Spatie\LaravelData\Attributes\MapInputName;
 use Spatie\LaravelData\Attributes\MapName;
+use Spatie\LaravelData\Attributes\Validation\RequiredWithout;
 
 class CardStockData extends Data implements DataCardStockData{
     #[MapInputName('id')]
@@ -35,7 +36,8 @@ class CardStockData extends Data implements DataCardStockData{
 
     #[MapInputName('item_id')]
     #[MapName('item_id')]
-    public mixed $item_id;
+    #[RequiredWithout('item')]
+    public mixed $item_id = null;
 
     #[MapInputName('total_qty')]
     #[MapName('total_qty')]
@@ -59,7 +61,8 @@ class CardStockData extends Data implements DataCardStockData{
 
     #[MapInputName('item')]
     #[MapName('item')]
-    public ?ItemData $item;
+    #[RequiredWithout('item_id')]
+    public ?ItemData $item = null;
 
     #[MapInputName('stock_movement')]
     #[MapName('stock_movement')]
@@ -76,17 +79,19 @@ class CardStockData extends Data implements DataCardStockData{
 
     public static function before(array &$attributes){
         $new = self::new();
-        $item = $new->ItemModel()->findOrFail($attributes['item_id']);
-        $attributes['prop_item'] = $item->toViewApi()->resolve();
-
+        
         $attributes['stock_movements'] ??= [];
         if (isset($attributes['stock_movement'])) {
             $attributes['stock_movements'][] = $attributes['stock_movement'];
             unset($attributes['stock_movement']);
         }
-
-        foreach ($attributes['stock_movements'] as &$stock_movement) {
-            $stock_movement['qty_unit_id'] ??= $item->unit_id;
+        if (isset($attributes['item_id'])){
+            $item = $new->ItemModel()->findOrFail($attributes['item_id']);
+            $attributes['prop_item'] = $item->toViewApi()->resolve();
+            
+            foreach ($attributes['stock_movements'] as &$stock_movement) {
+                $stock_movement['qty_unit_id'] ??= $item->unit_id;
+            }
         }
     }
 

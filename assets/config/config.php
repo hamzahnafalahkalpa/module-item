@@ -30,6 +30,11 @@ return [
         'enable' => true,
         'method' => 'AVERAGE'
     ],
+    'item_reference_types' => [
+        'material' => [
+            'schema' => 'Material'
+        ]
+    ],
     'inventory_types' => [
         'office_supply' => [
             'schema' => 'OfficeSupply'
