@@ -135,12 +135,15 @@ class CardStock extends PackageManagement implements ContractsCardStock
     public function prepareStoreCardStock(CardStockData $card_stock_dto): Model{
         $card_stock  = $this->createCardStock($card_stock_dto);
         $this->storeMappingStockMovement($card_stock_dto, $card_stock);
+        if (isset($card_stock_dto->props->props['tax'])){
+            $card_stock_dto->total_tax = intval($card_stock_dto->props->props['tax']->ppn/100 * $card_stock_dto->total_cogs);
+        }
         $this->fillingProps($card_stock, $card_stock_dto->props);
         $card_stock->receive_qty = floatval($card_stock_dto->receive_qty);
         $card_stock->request_qty = floatval($card_stock_dto->request_qty);
         $card_stock->total_qty   = $card_stock_dto->total_qty;
-        $card_stock->total_cogs  = $card_stock_dto->total_cogs;
         $card_stock->total_tax   = $card_stock_dto->total_tax;
+        $card_stock->total_cogs  = $card_stock_dto->total_cogs;
         $card_stock->save();
         return static::$card_stock_model = $card_stock;
     }
