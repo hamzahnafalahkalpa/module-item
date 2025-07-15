@@ -123,6 +123,7 @@ class ItemData extends Data implements DataItemData{
         }
     }
 
+
     public static function after(ItemData $data): ItemData{
         $new = static::new();
         $props = &$data->props;
