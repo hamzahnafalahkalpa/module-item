@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Spatie\LaravelData\Attributes\DataCollectionOf;
 use Spatie\LaravelData\Attributes\MapInputName;
 use Spatie\LaravelData\Attributes\MapName;
+use Illuminate\Support\Str;
 
 class ItemData extends Data implements DataItemData{
     #[MapInputName('id')]
@@ -106,6 +107,7 @@ class ItemData extends Data implements DataItemData{
             $attributes['reference_id'] = $model->getKey();
         }
     }
+
 
     public static function after(ItemData $data): ItemData{
         $new = static::new();
