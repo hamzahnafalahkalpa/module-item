@@ -13,7 +13,7 @@ use Hanafalah\ModuleItem\Contracts\Data\InventoryItemData;
 class InventoryItem extends BaseModuleItem implements ContractsInventoryItem
 {
     protected string $__entity = 'InventoryItem';
-    public static $inventory_item_model;
+    public $inventory_item_model;
     //protected mixed $__order_by_created_at = false; //asc, desc, false
 
     protected array $__cache = [
@@ -39,7 +39,7 @@ class InventoryItem extends BaseModuleItem implements ContractsInventoryItem
         $inventory_item = $this->usingEntity()->firstOrCreate(...$create);
         $this->fillingProps($inventory_item, $inventory_item_dto->props);
         $inventory_item->save();
-        return static::$inventory_item_model = $inventory_item;
+        return $this->inventory_item_model = $inventory_item;
     }
 
     public function inventoryItem(mixed $conditionals = null): Builder{

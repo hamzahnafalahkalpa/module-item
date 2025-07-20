@@ -12,7 +12,7 @@ use Hanafalah\ModuleItem\Contracts\Data\CompositionData;
 class Composition extends PackageManagement implements ContractsComposition
 {
     protected string $__entity = 'Composition';
-    public static $composition_model;
+    public $composition_model;
 
     public function prepareStoreComposition(CompositionData $composition_dto){
         $add = [
@@ -32,7 +32,7 @@ class Composition extends PackageManagement implements ContractsComposition
         $composition = $this->composition()->updateOrCreate(...$create);
         $this->fillingProps($composition,$composition_dto->props);
         $composition->save();
-        return static::$composition_model = $composition;
+        return $this->composition_model = $composition;
     }
 
     public function composition(mixed $conditionals = null): Builder{

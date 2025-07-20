@@ -14,7 +14,7 @@ use Illuminate\Support\Str;
 class Item extends PackageManagement implements ContractsItem
 {
     protected string $__entity = 'Item';
-    public static $item_model;
+    public $item_model;
 
     protected array $__cache = [
         'index' => [
@@ -102,7 +102,7 @@ class Item extends PackageManagement implements ContractsItem
         }
         $this->fillingProps($item,$item_dto->props);
         $item->save();
-        return static::$item_model = $item;
+        return $this->item_model = $item;
     }
 
     protected function processItemStock(ItemData &$item_dto, &$item){

@@ -7,7 +7,7 @@ use Hanafalah\ModuleItem\Contracts\Schemas\SupplyCategory as ContractsSupplyCate
 class SupplyCategory extends ItemStuff implements ContractsSupplyCategory
 {
     protected string $__entity = 'SupplyCategory';
-    public static $supply_category_model;
+    public $supply_category_model;
     //protected mixed $__order_by_created_at = false; //asc, desc, false
 
     protected array $__cache = [

@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 class NetUnit extends ItemStuff implements ContractsNetUnit
 {
     protected string $__entity = 'NetUnit';
-    public static $net_unit_model;
+    public $net_unit_model;
     //protected mixed $__order_by_created_at = false; //asc, desc, false
 
     protected array $__cache = [
@@ -23,7 +23,7 @@ class NetUnit extends ItemStuff implements ContractsNetUnit
 
     public function prepareStoreNetUnit(NetUnitData $net_unit_dto): Model{
         $net_unit_model = $this->prepareStoreUnicode($net_unit_dto);
-        return static::$net_unit_model = $net_unit_model;
+        return $this->net_unit_model = $net_unit_model;
     }
 
     public function netUnit(mixed $conditionals = null): Builder{

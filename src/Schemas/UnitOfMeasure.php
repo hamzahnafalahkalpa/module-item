@@ -13,7 +13,7 @@ use Hanafalah\ModuleItem\Contracts\Data\UnitOfMeasureData;
 class UnitOfMeasure extends BaseModuleItem implements ContractsUnitOfMeasure
 {
     protected string $__entity = 'UnitOfMeasure';
-    public static $unit_of_measure_model;
+    public $unit_of_measure_model;
     //protected mixed $__order_by_created_at = false; //asc, desc, false
 
     protected array $__cache = [
@@ -40,6 +40,6 @@ class UnitOfMeasure extends BaseModuleItem implements ContractsUnitOfMeasure
         $unit_of_measure = $this->usingEntity()->updateOrCreate(...$create);
         $this->fillingProps($unit_of_measure,$unit_of_measure_dto->props);
         $unit_of_measure->save();
-        return static::$unit_of_measure_model = $unit_of_measure;
+        return $this->unit_of_measure_model = $unit_of_measure;
     }
 }

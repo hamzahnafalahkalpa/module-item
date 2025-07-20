@@ -7,7 +7,7 @@ use Hanafalah\ModuleItem\Contracts\Schemas\CompositionUnit as ContractsCompositi
 class CompositionUnit extends ItemStuff implements ContractsCompositionUnit
 {
     protected string $__entity = 'CompositionUnit';
-    public static $composition_unit_model;
+    public $composition_unit_model;
     //protected mixed $__order_by_created_at = false; //asc, desc, false
 
     protected array $__cache = [

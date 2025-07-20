@@ -21,7 +21,7 @@ class CardStock extends PackageManagement implements ContractsCardStock
     use HasTaxCalculation;
 
     protected string $__entity = 'CardStock';
-    public static $card_stock_model;
+    public $card_stock_model;
     protected mixed $__order_by_created_at = ['reported_at', 'desc']; //asc, desc, false
 
     protected function createCardStock(CardStockData &$card_stock_dto){
@@ -145,7 +145,7 @@ class CardStock extends PackageManagement implements ContractsCardStock
         $card_stock->total_tax   = $card_stock_dto->total_tax;
         $card_stock->total_cogs  = $card_stock_dto->total_cogs;
         $card_stock->save();
-        return static::$card_stock_model = $card_stock;
+        return $this->card_stock_model = $card_stock;
     }
 
     // private function isNeedParent($stock_movement, $transaction): void{
