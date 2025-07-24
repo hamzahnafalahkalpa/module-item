@@ -14,7 +14,6 @@ use Hanafalah\ModuleItem\Contracts\Data\CardStockData;
 use Hanafalah\ModuleTax\Concerns\HasTaxCalculation;
 use Hanafalah\ModuleWarehouse\Contracts\Data\StockMovementData;
 use Hanafalah\ModuleWarehouse\Enums\MainMovement\Direction;
-use PDO;
 
 class CardStock extends PackageManagement implements ContractsCardStock
 {
@@ -86,7 +85,6 @@ class CardStock extends PackageManagement implements ContractsCardStock
         $props       = &$card_stock_dto->props->props;
         foreach ($card_stock_dto->stock_movements as $stock_movement_dto) {
             $stock_movement_dto->direction ??= $props['direction'] ?? 'REQUEST';
-            // $this->isNeedParent($stock_movement_dto, $transaction);
 
             $card_stock_dto->total_qty = 0;
             if (isset($stock_movement_dto->goods_receipt_unit)) {
@@ -98,7 +96,6 @@ class CardStock extends PackageManagement implements ContractsCardStock
             if ($stock_movement_dto->direction == Direction::IN->value) {
                 $card_stock_dto->receive_qty = $stock_movement_dto->qty ?? 0;
             }
-            // if (isset($stock_movement_dto->item_stock_id)) $this->initFunding($stock_movement_dto);                
             
             $stock_movement_dto->card_stock_id = $card_stock->getKey();
             if (isset($stock_movement_dto->item_stock)){
@@ -116,22 +113,6 @@ class CardStock extends PackageManagement implements ContractsCardStock
         }
     }
 
-    // protected function initFunding(mixed &$stock_movement_dto){
-    //     $stock_movement_dto->props->props->funding_id = $item_stock->funding_id ?? null;
-    //     $item_stock = $this->ItemStockModel()->findOrFail($stock_movement_dto->item_stock_id);
-    //     if (isset($stock_movement_dto->props->funding_id)) {
-    //         $funding = $this->FundingModel()->findOrFail($stock_movement_dto->props->funding_id);
-    //         $stock_movement_dto->props->props['prop_funding'] = $funding->toViewApi()->resolve();
-    //     }else{
-    //         $stock_movement_dto->props->props['prop_funding'] = [
-    //             'id'   => null,
-    //             'name' => null
-    //         ];
-    //     }
-    // }
-
-
-
     public function prepareStoreCardStock(CardStockData $card_stock_dto): Model{
         $card_stock  = $this->createCardStock($card_stock_dto);
         $this->storeMappingStockMovement($card_stock_dto, $card_stock);
@@ -147,15 +128,6 @@ class CardStock extends PackageManagement implements ContractsCardStock
         $card_stock->save();
         return $this->card_stock_model = $card_stock;
     }
-
-    // private function isNeedParent($stock_movement, $transaction): void{
-    //     $is_need_parent_id = in_array($transaction->reference_type, ['Distribution']);
-    //     if ($is_need_parent_id && $stock_movement['direction'] == Direction::OUT->value) {
-    //         if ($transaction->reference->flag == Flag::ORDER_DISTRIBUTION->value) {
-    //             if (!isset($stock_movement['parent_id'])) throw new \Exception('parent_id is required for distribution using out direction', 422);
-    //         }
-    //     }
-    // }
 
     public function cardStock(mixed $conditionals = null): Builder{
         return $this->generalSchemaModel($conditionals)
