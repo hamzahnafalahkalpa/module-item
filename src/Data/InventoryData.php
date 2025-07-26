@@ -61,16 +61,23 @@ class InventoryData extends Data implements DataInventoryData
         $new = static::new();
         $attributes['reference']['name'] = $attributes['name'];
         $attributes['item']['name']      = $attributes['name'];
+
         if (isset($attributes['id'])){
             $medical_item_model   = $new->InventoryModel()->with('reference')->findOrFail($attributes['id']);
             $attributes['reference_id']   = $reference['id'] = $medical_item_model->reference_id;
             $attributes['reference_type'] = $medical_item_model->reference_type;
         }else{
-            $config_keys = array_keys(config('module-item.inventory_types'));
-            $keys        = array_intersect(array_keys(request()->all()),$config_keys);
-            $key         = array_shift($keys);
-            $attributes['reference_type'] ??= request()->reference_type ?? $key;
-            $attributes['reference_type'] = Str::studly($attributes['reference_type']);
+            if (isset($attributes['reference_type'])){
+                $attributes[Str::snake($attributes['reference_type'])] = [
+                    'id' => null
+                ];
+            }else{
+                $config_keys = array_keys(config('module-item.inventory_types'));
+                $keys        = array_intersect(array_keys(request()->all()),$config_keys);
+                $key         = array_shift($keys);
+                $attributes['reference_type'] ??= request()->reference_type ?? $key;
+                $attributes['reference_type'] = Str::studly($attributes['reference_type']);
+            }
         }
     }
 
