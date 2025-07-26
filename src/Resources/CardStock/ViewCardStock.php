@@ -16,6 +16,7 @@ class ViewCardStock extends ApiResource
     {
         $arr = [
             'id'              => $this->id,
+            'item_id'         => $this->item_id,
             'item'            => $this->prop_item,
             'reference'       => $this->prop_reference,
             'stock_movement'  => $this->relationValidation('stockMovement', function () {
@@ -26,11 +27,12 @@ class ViewCardStock extends ApiResource
             'tax'               => $this->tax ?? null,
             'qty'               => floatval($this->qty),
             'cogs'              => $this->cogs,
-            'receive_qty'       => $this->receive_qty ?? null,
-            'request_qty'       => $this->request_qty ?? null,
-            'total_qty'         => $this->total_qty ?? null,
-            'total_tax'         => $this->total_tax ?? null,
-            'total_cogs'        => $this->total_cogs ?? null,
+            'price'             => $this->price,
+            'receive_qty'       => isset($this->receive_qty) ? floatval($this->receive_qty) : null,
+            'request_qty'       => isset($this->request_qty) ? floatval($this->request_qty) : null,
+            'total_qty'         => isset($this->total_qty) ? floatval($this->total_qty) : null,
+            'total_tax'         => isset($this->total_tax) ? intval($this->total_tax) : null,
+            'total_cogs'        => isset($this->total_cogs) ? intval($this->total_cogs) : null,
             'is_procurement'    => $this->is_procurement ?? false,
             'created_at'        => $this->created_at,
             'updated_at'        => $this->updated_at,

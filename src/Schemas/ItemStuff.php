@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 class ItemStuff extends Unicode implements SchemasItemStuff
 {
     protected string $__entity = 'ItemStuff';
-    public static $item_stuff_model;
+    public $item_stuff_model;
     protected mixed $__order_by_created_at = false; //asc, desc, false
 
     protected array $__cache = [
@@ -24,7 +24,7 @@ class ItemStuff extends Unicode implements SchemasItemStuff
     
     public function prepareStoreItemStuff(ItemStuffData $item_stuff_dto): Model{
         $item_stuff = $this->prepareStoreUnicode($item_stuff_dto);
-        return static::$item_stuff_model = $item_stuff;
+        return $this->item_stuff_model = $item_stuff;
     }
 
     public function itemStuff(mixed $conditionals = null): Builder{

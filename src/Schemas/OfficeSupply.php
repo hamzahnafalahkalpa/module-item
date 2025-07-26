@@ -7,7 +7,7 @@ use Hanafalah\ModuleItem\Contracts\Schemas\OfficeSupply as ContractsOfficeSupply
 class OfficeSupply extends InventoryItem implements ContractsOfficeSupply
 {
     protected string $__entity = 'OfficeSupply';
-    public static $office_supply_model;
+    public $office_supply_model;
     //protected mixed $__order_by_created_at = false; //asc, desc, false
 
     protected array $__cache = [

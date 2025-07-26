@@ -10,7 +10,6 @@ use Hanafalah\ModuleItem\Resources\ItemHasVariant\{
     ShowItemHasVariant, ViewItemHasVariant
 };
 
-
 class ItemHasVariant extends BaseModel{
     use HasUlids, HasProps, SoftDeletes;
 

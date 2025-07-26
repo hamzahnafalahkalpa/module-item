@@ -4,9 +4,15 @@ namespace Hanafalah\ModuleItem\Models;
 
 use Hanafalah\ModuleItem\Resources\Manufacture\ViewManufacture;
 use Hanafalah\LaravelSupport\Models\BaseModel;
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
 
 class Manufacture extends BaseModel
 {
+    use HasUlids;
+
+    public $incrementing = false;
+    protected $keyType = 'string';
+    protected $primaryKey = 'id';
     protected $list  = ['id', 'name'];
 
     public function getViewResource(){

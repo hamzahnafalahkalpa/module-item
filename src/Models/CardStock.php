@@ -12,7 +12,6 @@ use Hanafalah\LaravelHasProps\Concerns\HasProps;
 use Hanafalah\LaravelSupport\Models\BaseModel;
 use Hanafalah\ModuleWarehouse\Enums\MainMovement\Direction;
 use Hanafalah\ModuleWarehouse\Enums\MainMovement\PriceUpdateMethod;
-use Hanafalah\ModuleWarehouse\Models\Stock\MainMovement;
 
 class CardStock extends BaseModel
 {
@@ -24,8 +23,7 @@ class CardStock extends BaseModel
     protected $list       = [
         'id', 'parent_id', 'reference_type', 'reference_id', 
         'item_id', 'transaction_id', 'reported_at', 
-        'receive_qty', 'request_qty',
-        'total_qty', 'total_tax', 'total_cogs'
+        'request_qty', 'total_qty', 'total_tax', 'total_cogs'
     ];
     protected $show       = [];
     protected $casts      = [

@@ -7,7 +7,7 @@ use Hanafalah\ModuleItem\Contracts\Schemas\StuffSupply as ContractsStuffSupply;
 class StuffSupply extends InventoryItem implements ContractsStuffSupply
 {
     protected string $__entity = 'StuffSupply';
-    public static $stuff_supply_model;
+    public $stuff_supply_model;
     //protected mixed $__order_by_created_at = false; //asc, desc, false
 
     protected array $__cache = [

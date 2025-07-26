@@ -20,10 +20,20 @@ class CardStock extends PackageManagement implements ContractsCardStock
     use HasTaxCalculation;
 
     protected string $__entity = 'CardStock';
-    public static $card_stock_model;
+    public $card_stock_model;
     protected mixed $__order_by_created_at = ['reported_at', 'desc']; //asc, desc, false
 
     protected function createCardStock(CardStockData &$card_stock_dto){
+        if (!isset($card_stock_dto->item_id) && isset($card_stock_dto->item)){
+            $item_model = $this->schemaContract('item')->prepareStoreItem($card_stock_dto->item);
+            $card_stock_dto->item_id = $item_model->getKey();
+            $card_stock_dto->props->props['prop_item'] = $item_model->toViewApi()->resolve();
+            foreach ($card_stock_dto->stock_movements as &$stock_movement) {
+                $stock_movement->qty_unit_id ??= $item_model->unit_id;
+                $stock_movement->props->props['prop_unit'] = $item_model->prop_unit;
+            }
+        }
+
         $add = [
             'parent_id'      => $card_stock_dto->parent_id ?? null,
             'item_id'        => $card_stock_dto->item_id,
@@ -38,13 +48,6 @@ class CardStock extends PackageManagement implements ContractsCardStock
             $create = [$add];
         }
         $card_stock = $this->usingEntity()->firstOrCreate(...$create);
-        // if (isset($props['warehouse_id'])){
-        //     $warehouse = $this->{config('module-item.warehouse').'Model'}()->findOrFail($props['warehouse_id']);
-        //     $props['prop_warehouse'] = [
-        //         'id'   => $warehouse->getKey(),
-        //         'name' => $warehouse->name
-        //     ];
-        // }
 
         $card_stock->load(['transactionItem','transaction.reference']);
         if (count($card_stock_dto->stock_movements) == 0 && isset($card_stock_dto->stock_movement)) {
@@ -71,11 +74,9 @@ class CardStock extends PackageManagement implements ContractsCardStock
     }
 
     protected function storeMappingStockMovement(CardStockData &$card_stock_dto, Model $card_stock){
-        $transaction = $card_stock->transaction;
         $props       = &$card_stock_dto->props->props;
         foreach ($card_stock_dto->stock_movements as $stock_movement_dto) {
-            $stock_movement_dto->direction ??= $props['direction'];
-            // $this->isNeedParent($stock_movement_dto, $transaction);
+            $stock_movement_dto->direction ??= $props['direction'] ?? 'REQUEST';
 
             $card_stock_dto->total_qty = 0;
             if (isset($stock_movement_dto->goods_receipt_unit)) {
@@ -87,7 +88,6 @@ class CardStock extends PackageManagement implements ContractsCardStock
             if ($stock_movement_dto->direction == Direction::IN->value) {
                 $card_stock_dto->receive_qty = $stock_movement_dto->qty ?? 0;
             }
-            // if (isset($stock_movement_dto->item_stock_id)) $this->initFunding($stock_movement_dto);                
             
             $stock_movement_dto->card_stock_id = $card_stock->getKey();
             if (isset($stock_movement_dto->item_stock)){
@@ -95,6 +95,7 @@ class CardStock extends PackageManagement implements ContractsCardStock
                 $item_stock_dto->procurement_id ??= $card_stock->reference_id;
                 $item_stock_dto->procurement_type ??= $card_stock->reference_type;
             }
+            
             $stock_movement_model = $this->schemaContract('stock_movement')->prepareStoreStockMovement($stock_movement_dto);
             if (isset($stock_movement_dto->props->cogs)) {
                 $stock_movement_model->cogs       = $stock_movement_dto->props->cogs;
@@ -105,43 +106,21 @@ class CardStock extends PackageManagement implements ContractsCardStock
         }
     }
 
-    // protected function initFunding(mixed &$stock_movement_dto){
-    //     $stock_movement_dto->props->props->funding_id = $item_stock->funding_id ?? null;
-    //     $item_stock = $this->ItemStockModel()->findOrFail($stock_movement_dto->item_stock_id);
-    //     if (isset($stock_movement_dto->props->funding_id)) {
-    //         $funding = $this->FundingModel()->findOrFail($stock_movement_dto->props->funding_id);
-    //         $stock_movement_dto->props->props['prop_funding'] = $funding->toViewApi()->resolve();
-    //     }else{
-    //         $stock_movement_dto->props->props['prop_funding'] = [
-    //             'id'   => null,
-    //             'name' => null
-    //         ];
-    //     }
-    // }
-
-
-
     public function prepareStoreCardStock(CardStockData $card_stock_dto): Model{
-        $card_stock  = $this->createCardStock($card_stock_dto);
+        $card_stock = $this->createCardStock($card_stock_dto);
         $this->storeMappingStockMovement($card_stock_dto, $card_stock);
+        if (isset($card_stock_dto->props->props['tax'])){
+            $card_stock_dto->total_tax = intval($card_stock_dto->props->props['tax']->ppn/100 * $card_stock_dto->total_cogs);
+        }
         $this->fillingProps($card_stock, $card_stock_dto->props);
         $card_stock->receive_qty = floatval($card_stock_dto->receive_qty);
         $card_stock->request_qty = floatval($card_stock_dto->request_qty);
         $card_stock->total_qty   = $card_stock_dto->total_qty;
-        $card_stock->total_cogs  = $card_stock_dto->total_cogs;
         $card_stock->total_tax   = $card_stock_dto->total_tax;
+        $card_stock->total_cogs  = $card_stock_dto->total_cogs;
         $card_stock->save();
-        return static::$card_stock_model = $card_stock;
+        return $this->card_stock_model = $card_stock;
     }
-
-    // private function isNeedParent($stock_movement, $transaction): void{
-    //     $is_need_parent_id = in_array($transaction->reference_type, ['Distribution']);
-    //     if ($is_need_parent_id && $stock_movement['direction'] == Direction::OUT->value) {
-    //         if ($transaction->reference->flag == Flag::ORDER_DISTRIBUTION->value) {
-    //             if (!isset($stock_movement['parent_id'])) throw new \Exception('parent_id is required for distribution using out direction', 422);
-    //         }
-    //     }
-    // }
 
     public function cardStock(mixed $conditionals = null): Builder{
         return $this->generalSchemaModel($conditionals)

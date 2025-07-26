@@ -19,7 +19,7 @@ class ShowCardStock extends ViewCardStock
             'stock_movements' => $this->relationValidation('stockMovements', function () {
                 $stock_movements = $this->stockMovements;
                 return $stock_movements->transform(function ($stock) {
-                    return $stock->toShowApi()->resolve();
+                    return $stock->toShowApi();
                 });
             }),
             'item' => $this->relationValidation('item', function () {

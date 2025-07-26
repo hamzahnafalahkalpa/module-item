@@ -13,7 +13,7 @@ use Illuminate\Support\Str;
 class Inventory extends BaseModuleItem implements ContractsInventory
 {
     protected string $__entity = 'Inventory';
-    public static $inventory_model;
+    public $inventory_model;
     //protected mixed $__order_by_created_at = false; //asc, desc, false
 
     protected array $__cache = [

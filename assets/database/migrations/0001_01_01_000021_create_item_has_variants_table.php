@@ -32,7 +32,7 @@ return new class extends Migration
             Schema::create($table_name, function (Blueprint $table) {
                 $item = app(config('database.models.Item', Item::class));
 
-                $table->id();
+                $table->ulid('id')->primary();
                 $table->foreignIdFor($item::class)->nullable(false)
                       ->constrained()->cascadeOnDelete()->cascadeOnUpdate();
                 $table->string('variant_name',255)->nullable(false);

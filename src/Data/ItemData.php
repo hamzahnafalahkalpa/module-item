@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Spatie\LaravelData\Attributes\DataCollectionOf;
 use Spatie\LaravelData\Attributes\MapInputName;
 use Spatie\LaravelData\Attributes\MapName;
+use Illuminate\Support\Str;
 
 class ItemData extends Data implements DataItemData{
     #[MapInputName('id')]
@@ -30,6 +31,10 @@ class ItemData extends Data implements DataItemData{
     #[MapName('reference_model')]
     public ?Model $reference_model = null;
 
+    #[MapInputName('reference')]
+    #[MapName('reference')]
+    public array|object|null $reference = null;
+    
     #[MapInputName('barcode')]
     #[MapName('barcode')]
     public ?string $barcode = null;
@@ -103,13 +108,30 @@ class ItemData extends Data implements DataItemData{
         if (isset($attributes['reference_model'])){
             $model = $attributes['reference_model'];
             $attributes['reference_type'] = $model->getMorphClass();
-            $attributes['reference_id'] = $model->getKey();
+            $attributes['reference_id']   = $model->getKey();
+        }
+        if (isset($attributes['reference'])){
+            $attributes['reference']['name'] ??= $attributes['name'];
+            $attributes['name'] ??= $attributes['reference']['name'];
+        }
+        if (!isset($attributes['id']) && !isset($attributes['reference_type'])){
+            $config_keys = array_keys(config('module-item.item_reference_types'));
+            $keys        = array_intersect(array_keys(request()->all()),$config_keys);
+            $key         = array_shift($keys);
+            $attributes['reference_type'] ??= request()->reference_type ?? $key;
+            $attributes['reference_type'] = Str::studly($attributes['reference_type']);
         }
     }
+
 
     public static function after(ItemData $data): ItemData{
         $new = static::new();
         $props = &$data->props;
+
+        if (isset($data->reference)){
+            $reference = &$data->reference;
+            $reference = self::transformToData($data->reference_type, $reference);
+        }
 
         $data->props['prop_unit'] = [
             'id'    => null,
@@ -137,6 +159,7 @@ class ItemData extends Data implements DataItemData{
                     'name' => $data->net_unit['name'],
                     'flag' => 'NetUnit'
                 ]);
+                $data->net_unit_id = $item_stuff->getKey();
             }
         }
         $props['prop_net_unit'] = [
@@ -153,13 +176,19 @@ class ItemData extends Data implements DataItemData{
             if (isset($data->unit,$data->unit['name'])){
                 $item_stuff = $item_stuff->firstOrCreate([
                     'name' => $data->unit['name'],
-                    'flag' => 'UnitSale'
+                    'flag' => 'SellingForm'
                 ]);
+                $data->unit_id = $item_stuff->getKey();
             }
         }
         $props['prop_unit'] = [
             'id'    => $item_stuff->getKey(),
             'name'  => $item_stuff->name
         ];
+    }
+
+    private static function transformToData(string $entity,array $attributes){
+        $new = static::new();
+        return $new->requestDTO(config('app.contracts.'.$entity.'Data'),$attributes);
     }
 }

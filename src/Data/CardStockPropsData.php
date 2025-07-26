@@ -9,6 +9,10 @@ use Spatie\LaravelData\Attributes\MapInputName;
 use Spatie\LaravelData\Attributes\MapName;
 
 class CardStockPropsData extends Data implements DataCardStockPropsData{
+    #[MapInputName('receive_qty')]
+    #[MapName('receive_qty')]
+    public ?float $receive_qty = null;
+
     #[MapInputName('tax')]
     #[MapName('tax')]
     public ?TaxData $tax = null;

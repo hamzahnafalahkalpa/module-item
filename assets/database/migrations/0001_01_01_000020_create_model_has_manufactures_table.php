@@ -27,7 +27,7 @@ return new class extends Migration
             Schema::create($table_name, function (Blueprint $table) {
                 $manufacture = app(config('database.models.Manufacture', Manufacture::class));
 
-                $table->id();
+                $table->ulid('id')->primary();
                 $table->string('model_type', 50)->nullable(false);
                 $table->string('model_id', 36)->nullable(false);
                 $table->foreignIdFor($manufacture::class)->index()
