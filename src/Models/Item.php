@@ -35,7 +35,7 @@ class Item extends BaseModel
     ];
 
     public function viewUsingRelation(): array{
-        return ['reference'];
+        return ['reference','itemStock'];
     }
 
     public function showUsingRelation(): array{
@@ -99,7 +99,11 @@ class Item extends BaseModel
     public function unit(){return $this->belongsToModel('ItemStuff', 'unit_id');}
     public function reference(){return $this->morphTo();}
     public function netUnit(){return $this->belongsToModel('ItemStuff', 'net_unit_id');}
-    public function itemStock(){return $this->morphOneModel('ItemStock', 'subject');}
+    public function itemStock(){
+        return $this->morphOneModel('ItemStock', 'subject')->when(isset(request()->warehouse_id),function($query){
+            $query->where('warehouse_type', request()->warehouse_type)->where('warehouse_id', request()->warehouse_id);
+        });
+    }
     public function itemStocks(){return $this->morphManyModel('ItemStock', 'subject');}
     public function cardStock(){return $this->hasOneModel('CardStock');}
     public function cardStocks(){return $this->hasManyModel('CardStock');}

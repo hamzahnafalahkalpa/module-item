@@ -48,13 +48,6 @@ class CardStock extends PackageManagement implements ContractsCardStock
             $create = [$add];
         }
         $card_stock = $this->usingEntity()->firstOrCreate(...$create);
-        // if (isset($props['warehouse_id'])){
-        //     $warehouse = $this->{config('module-item.warehouse').'Model'}()->findOrFail($props['warehouse_id']);
-        //     $props['prop_warehouse'] = [
-        //         'id'   => $warehouse->getKey(),
-        //         'name' => $warehouse->name
-        //     ];
-        // }
 
         $card_stock->load(['transactionItem','transaction.reference']);
         if (count($card_stock_dto->stock_movements) == 0 && isset($card_stock_dto->stock_movement)) {
@@ -81,7 +74,6 @@ class CardStock extends PackageManagement implements ContractsCardStock
     }
 
     protected function storeMappingStockMovement(CardStockData &$card_stock_dto, Model $card_stock){
-        $transaction = $card_stock->transaction;
         $props       = &$card_stock_dto->props->props;
         foreach ($card_stock_dto->stock_movements as $stock_movement_dto) {
             $stock_movement_dto->direction ??= $props['direction'] ?? 'REQUEST';
@@ -103,6 +95,7 @@ class CardStock extends PackageManagement implements ContractsCardStock
                 $item_stock_dto->procurement_id ??= $card_stock->reference_id;
                 $item_stock_dto->procurement_type ??= $card_stock->reference_type;
             }
+            
             $stock_movement_model = $this->schemaContract('stock_movement')->prepareStoreStockMovement($stock_movement_dto);
             if (isset($stock_movement_dto->props->cogs)) {
                 $stock_movement_model->cogs       = $stock_movement_dto->props->cogs;
@@ -114,7 +107,7 @@ class CardStock extends PackageManagement implements ContractsCardStock
     }
 
     public function prepareStoreCardStock(CardStockData $card_stock_dto): Model{
-        $card_stock  = $this->createCardStock($card_stock_dto);
+        $card_stock = $this->createCardStock($card_stock_dto);
         $this->storeMappingStockMovement($card_stock_dto, $card_stock);
         if (isset($card_stock_dto->props->props['tax'])){
             $card_stock_dto->total_tax = intval($card_stock_dto->props->props['tax']->ppn/100 * $card_stock_dto->total_cogs);
