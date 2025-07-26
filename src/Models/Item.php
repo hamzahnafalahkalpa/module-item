@@ -52,13 +52,11 @@ class Item extends BaseModel
     protected static function booted(): void{
         parent::booted();
         static::creating(function ($query) {
-            if (!isset($query->transaction_code)) {
-                $query->transaction_code = static::hasEncoding('ITEM');
-            }
-            if (!isset($query->cogs))               $query->cogs = 0;
-            if (!isset($query->last_cogs))          $query->last_cogs = 0;
-            if (!isset($query->last_selling_price)) $query->last_selling_price = 0;
-            if (!isset($query->selling_price))      $query->selling_price = 0;
+            $query->item_code ??= static::hasEncoding('ITEM');
+            $query->cogs ??= 0;
+            $query->last_cogs ??= 0;
+            $query->last_selling_price ??= 0;
+            $query->selling_price ??= 0;
         });
         static::created(function ($query) {
             if (isset($query->margin) && isset($query->cogs)) {
