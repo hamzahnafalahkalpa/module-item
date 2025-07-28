@@ -35,7 +35,7 @@ class Item extends BaseModel
     ];
 
     public function viewUsingRelation(): array{
-        return ['reference'];
+        return ['reference','itemStock'];
     }
 
     public function showUsingRelation(): array{
@@ -52,13 +52,11 @@ class Item extends BaseModel
     protected static function booted(): void{
         parent::booted();
         static::creating(function ($query) {
-            if (!isset($query->transaction_code)) {
-                $query->transaction_code = static::hasEncoding('ITEM');
-            }
-            if (!isset($query->cogs))               $query->cogs = 0;
-            if (!isset($query->last_cogs))          $query->last_cogs = 0;
-            if (!isset($query->last_selling_price)) $query->last_selling_price = 0;
-            if (!isset($query->selling_price))      $query->selling_price = 0;
+            $query->item_code ??= static::hasEncoding('ITEM');
+            $query->cogs ??= 0;
+            $query->last_cogs ??= 0;
+            $query->last_selling_price ??= 0;
+            $query->selling_price ??= 0;
         });
         static::created(function ($query) {
             if (isset($query->margin) && isset($query->cogs)) {
@@ -99,7 +97,11 @@ class Item extends BaseModel
     public function unit(){return $this->belongsToModel('ItemStuff', 'unit_id');}
     public function reference(){return $this->morphTo();}
     public function netUnit(){return $this->belongsToModel('ItemStuff', 'net_unit_id');}
-    public function itemStock(){return $this->morphOneModel('ItemStock', 'subject');}
+    public function itemStock(){
+        return $this->morphOneModel('ItemStock', 'subject')->when(isset(request()->warehouse_id),function($query){
+            $query->where('warehouse_type', request()->warehouse_type)->where('warehouse_id', request()->warehouse_id);
+        });
+    }
     public function itemStocks(){return $this->morphManyModel('ItemStock', 'subject');}
     public function cardStock(){return $this->hasOneModel('CardStock');}
     public function cardStocks(){return $this->hasManyModel('CardStock');}

@@ -41,7 +41,7 @@ class Inventory extends BaseModuleItem implements ContractsInventory
         ];
         $guard = isset($inventory_dto->id) 
             ? ['id' => $inventory_dto->id]
-            : [
+            : [ 
                 'reference_type' => $inventory_dto->reference_type, 
                 'reference_id'   => $inventory_dto->reference_id
             ];

@@ -108,7 +108,7 @@ class ItemData extends Data implements DataItemData{
         if (isset($attributes['reference_model'])){
             $model = $attributes['reference_model'];
             $attributes['reference_type'] = $model->getMorphClass();
-            $attributes['reference_id'] = $model->getKey();
+            $attributes['reference_id']   = $model->getKey();
         }
         if (isset($attributes['reference'])){
             $attributes['reference']['name'] ??= $attributes['name'];
