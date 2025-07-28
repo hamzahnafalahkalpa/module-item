@@ -29,8 +29,7 @@ trait HasItem
         });
     }    
 
-    public function item()
-    {
+    public function item(){
         return $this->morphOneModel('Item', 'reference');
     }
 }
