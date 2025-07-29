@@ -28,9 +28,9 @@ class ViewItem extends ApiResource
         'is_using_batch'     => $this->is_using_batch == 1 ? true : false,
         'is_has_funding'     => $this->itemStock()->whereNotNull('funding_id')->first() ? true : false,
         'compositions'       => $this->prop_compositions,
-        'unit_id'     => $this->unit_id,
-        'unit'        => $this->prop_unit,
-        'item_stock'  => $this->relationValidation('itemStock', function () {
+        'unit_id'            => $this->unit_id,
+        'unit'               => $this->prop_unit,
+        'item_stock'         => $this->relationValidation('itemStock', function () {
             return $this->itemStock->toViewApi()->resolve();
         }),
         'item_stocks'  => $this->relationValidation('itemStocks', function () {
@@ -41,6 +41,11 @@ class ViewItem extends ApiResource
         'card_stock' => $this->relationValidation('cardStock', function () {
             return $this->cardStock->toViewApi()->resolve();
         }),
+        'item_has_variants' => $this->relationValidation('itemHasVariants', function () {
+            return $this->itemHasVariants->transform(function ($item_has_variant) {
+                return $item_has_variant->toViewApi();
+            });
+        },$this->prop_item_has_variants),
         'selling_price'    => $this->selling_price,
         'cogs'             => $this->cogs,
         'status'           => $this->status,

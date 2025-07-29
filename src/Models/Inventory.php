@@ -49,6 +49,13 @@ class Inventory extends BaseModel
         ];
     }
 
+    protected static function booted(): void{
+        parent::booted();
+        static::creating(function ($query) {
+            $query->inventory_code ??= static::hasEncoding('INVENTORY');
+        });
+    }
+
     public function viewUsingRelation(): array{
         return ['item.itemStock', 'reference'];
     }
@@ -58,6 +65,7 @@ class Inventory extends BaseModel
             'reference',
             'item' => function ($query) {
                 $query->with([
+                    'itemHasVariants',
                     'itemStock' => function ($query) {
                         $query->with([
                             'childs.stockBatches.batch',

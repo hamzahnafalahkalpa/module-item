@@ -36,8 +36,9 @@ return new class extends Migration
                 $table->foreignIdFor($item::class)->nullable(false)
                       ->constrained()->cascadeOnDelete()->cascadeOnUpdate();
                 $table->string('variant_name',255)->nullable(false);
-                $table->string('variant_type',50)->nullable(false);
-                $table->string('variant_id',36)->nullable(false);
+                $table->string('variant_label',255)->nullable(true);
+                $table->string('variant_type',50)->nullable(true);
+                $table->string('variant_id',36)->nullable(true);
                 $table->json('props')->nullable();
                 $table->timestamps();
                 $table->softDeletes();

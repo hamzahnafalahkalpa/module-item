@@ -17,7 +17,7 @@ class ItemHasVariant extends BaseModel{
     protected $primaryKey = 'id';
     protected $keyType    = 'string';
     protected $list = [
-        'id', 'item_id', 'variant_name', 'variant_type', 'variant_id', 'props'
+        'id', 'item_id', 'variant_name','variant_label', 'variant_type', 'variant_id', 'props'
     ];
 
     public function getViewResource(){

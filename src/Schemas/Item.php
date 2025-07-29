@@ -68,19 +68,29 @@ class Item extends PackageManagement implements ContractsItem
         $item->last_selling_price  = $item_dto->last_selling_price ?? $item->selling_price ?? 0;
         $item->last_cogs           = $item_dto->last_cogs ?? $current_cogs ?? 0;
         if (isset($item_dto->selling_price)) $item->selling_price = $item_dto->selling_price ?? 0;        
-        $item_dto->props['prop_reference'] = ($item_dto->reference_model ?? $item->reference)->toViewApi()->resolve();
+        $props = &$item_dto->props->props;
+        $props['prop_reference'] = ($item_dto->reference_model ?? $item->reference)->toViewApi()->resolve();
 
         $item->compositions()->detach();
         if (isset($item_dto->compositions) && count($item_dto->compositions) > 0) {
             $compositions = [];
-            $item_dto->props['prop_compositions'] = [];
-            $prop_compositions = &$item_dto->props['prop_compositions'];
+            $props['prop_compositions'] = [];
+            $prop_compositions = &$props['prop_compositions'];
             foreach ($item_dto->compositions as $composition) {
                 $compositions[] = $composition = $this->schemaContract('composition')->prepareStoreComposition($composition);
                 $prop_compositions[] = $composition->toViewApi()->only(['id','name']);
             }
             
             $item->compositions()->attach($compositions, ['model_type' => $item->getMorphClass()]);
+        }
+
+        $props = &$item_dto->props;
+        if (isset($props->prop_item_has_variants) && count($props->prop_item_has_variants) > 0) {
+            foreach ($props->prop_item_has_variants as &$item_has_variant) {
+                $item_has_variant->item_id = $item->getKey();
+                $item_has_variant_model = $this->schemaContract('item_has_variant')->prepareStoreItemHasVariant($item_has_variant);
+                $item_has_variant = $item_has_variant_model->toViewApi()->resolve();
+            }
         }
 
         $this->fillingProps($item, $item_dto->props);

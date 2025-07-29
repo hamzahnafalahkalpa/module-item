@@ -16,11 +16,13 @@ class ViewItemHasVariant extends ApiResource
   public function toArray(Request $request): array
   {
     $arr = [
-      'id'           => $this->id,
-      'item_id'      => $this->item_id,
-      'variant_name' => $this->variant_name,
-      'variant_type' => $this->variant_type,
-      'variant_id'   => $this->variant_id
+      'id'             => $this->id,
+      'item_id'        => $this->item_id,
+      'variant_name'   => $this->variant_name,
+      'variant_label'  => $this->variant_label,
+      'variant_type'   => $this->variant_type,
+      'variant_id'     => $this->variant_id,
+      'variant'        => $this->prop_variant
     ];
     return $arr;
   }

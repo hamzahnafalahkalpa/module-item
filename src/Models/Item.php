@@ -40,7 +40,7 @@ class Item extends BaseModel
 
     public function showUsingRelation(): array{
         return [
-            'reference', 'itemStock' => function ($query) {
+            'reference', 'itemHasVariants', 'itemStock' => function ($query) {
                 $query->whereNull('funding_id')->with([
                     'stockBatches.batch',
                     'childs.stockBatches.batch'
@@ -125,4 +125,5 @@ class Item extends BaseModel
     }
 
     public function coa(){return $this->belongsToModel('Coa');}
+    public function itemHasVariants(){return $this->hasManyModel('ItemHasVariant');}
 }

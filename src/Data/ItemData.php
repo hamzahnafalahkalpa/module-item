@@ -102,7 +102,7 @@ class ItemData extends Data implements DataItemData{
 
     #[MapInputName('props')]
     #[MapName('props')]
-    public ?array $props = [];
+    public ?ItemPropsData $props = null;
 
     public static function before(array &$attributes){
         if (isset($attributes['reference_model'])){
@@ -121,23 +121,22 @@ class ItemData extends Data implements DataItemData{
             $attributes['reference_type'] ??= request()->reference_type ?? $key;
             $attributes['reference_type'] = Str::studly($attributes['reference_type']);
         }
+        
+        if (isset($attributes['item_has_variants'])){
+            $attributes['prop_item_has_variants'] = $attributes['item_has_variants'];
+            unset($attributes['item_has_variants']);
+        }
     }
-
 
     public static function after(ItemData $data): ItemData{
         $new = static::new();
-        $props = &$data->props;
+        $props = &$data->props->props;
 
         if (isset($data->reference)){
             $reference = &$data->reference;
             $reference = self::transformToData($data->reference_type, $reference);
         }
 
-        $data->props['prop_unit'] = [
-            'id'    => null,
-            'name'  => null
-        ];
-        
         self::createUnitSale($new,$data,$props);
         self::createNetUnit($new,$data,$props);
 
