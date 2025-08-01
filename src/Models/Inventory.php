@@ -27,6 +27,8 @@ class Inventory extends BaseModel
         'brand_id',
         'supply_category_id',
         'model_name',
+        'used_by_type',
+        'user_by_id',
         'props',
     ];
 
@@ -90,4 +92,5 @@ class Inventory extends BaseModel
     public function inventoryAsset(){return $this->hasOneModel('InventoryAsset');}
     public function inventoryAssets(){return $this->hasManyModel('InventoryAsset');}
     public function reference(){return $this->morphTo();}
+    public function usedBy(){return $this->morphTo();}
 }

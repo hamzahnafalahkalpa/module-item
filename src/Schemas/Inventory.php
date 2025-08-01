@@ -61,4 +61,11 @@ class Inventory extends BaseModuleItem implements ContractsInventory
         $inventory->save();
         return $inventory;
     }
+
+    public function prepareUsedBy(Model $asset,Model $model){
+        $asset->used_by_type = $model->getMorphClass();
+        $asset->used_by_id   = $model->getKey();
+        $asset->prop_used_by = $model->toViewApi()->resolve();
+        $asset->save();
+    }
 }

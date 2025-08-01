@@ -36,8 +36,8 @@ return new class extends Migration
                 $table->ulid('id')->primary();
                 $table->string('inventory_code', 50)->nullable(true);
                 $table->string('name', 255)->nullable(false);
-                $table->string('reference_type');
-                $table->string('reference_id');
+                $table->string('reference_type',50);
+                $table->string('reference_id',36);
 
                 $table->foreignIdFor($brand::class)
                         ->nullable()->index()->constrained()
@@ -49,6 +49,9 @@ return new class extends Migration
 
                 $table->string('model_name', 255)->default('')->nullable(false);
                 $table->text('description')->nullable();
+                $table->string('used_by_type',50)->nullable();
+                $table->string('used_by_id',36)->nullable();
+
                 $table->json('props')->nullable();
                 $table->timestamps();
                 $table->softDeletes();
