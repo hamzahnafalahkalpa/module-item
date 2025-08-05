@@ -31,7 +31,8 @@ class Item extends BaseModel
 
     protected $casts = [
         'name' => 'string',
-        'selling_price' => 'int'
+        'selling_price' => 'int',
+        'reference_type' => 'string'
     ];
 
     public function viewUsingRelation(): array{
