@@ -17,7 +17,6 @@ class ViewItemStock extends ViewStock
   {
     $arr = [];
     $arr = $this->mergeArray(parent::toArray($request), $arr);
-
     return $arr;
   }
 }
