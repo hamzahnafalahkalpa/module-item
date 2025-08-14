@@ -22,11 +22,11 @@ class ViewInventory extends ApiResource
       'name'               => $this->name,
       'reference_type'     => $this->reference_type,
       Str::snake($this->reference_type) => $this->prop_reference,
-      'item'               => $this->prop_item,
+      'item'               => $this->propNil($this->prop_item,'reference'),
       'brand_id'           => $this->brand_id,
-      'brand'              => $this->prop_brand,
+      'brand'              => $this->propOnlies($this->prop_brand, 'id', 'name', 'flag', 'label'),
       'supply_category_id' => $this->supply_category_id,
-      'supply_category'    => $this->prop_supply_category,
+      'supply_category'    => $this->propOnlies($this->prop_supply_category, 'id', 'name', 'flag', 'label'),
       'model_name'         => $this->model_name
     ];
     return $arr;

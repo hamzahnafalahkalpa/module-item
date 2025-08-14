@@ -26,7 +26,7 @@ class ViewItem extends ApiResource
         },$this->prop_reference),
         'margin'             => $this->margin,
         'is_using_batch'     => $this->is_using_batch == 1 ? true : false,
-        'is_has_funding'     => $this->itemStock()->whereNotNull('funding_id')->first() ? true : false,
+        // 'is_has_funding'     => $this->itemStock()->whereNotNull('funding_id')->first() ? true : false,
         'compositions'       => $this->prop_compositions,
         'unit_id'            => $this->unit_id,
         'unit'               => $this->prop_unit,

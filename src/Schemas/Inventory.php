@@ -57,6 +57,15 @@ class Inventory extends BaseModuleItem implements ContractsInventory
             $item = $this->schemaContract('item')->prepareStoreItem($inventory_dto->item);
             $inventory_dto->props['prop_item'] = $item->toViewApi()->resolve();
         }
+
+        $brand = $this->BrandModel();
+        if (isset($inventory_dto->brand_id)) $brand = $brand->findOrFail($inventory_dto->brand_id);
+        $inventory_dto->props['prop_brand'] = $brand->toViewApi()->resolve();
+
+        $supply_category = $this->SupplyCategoryModel();
+        if (isset($inventory_dto->supply_category_id)) $supply_category = $supply_category->findOrFail($inventory_dto->supply_category_id);
+        $inventory_dto->props['prop_supply_category'] = $supply_category->toViewApi()->resolve();
+
         $this->fillingProps($inventory,$inventory_dto->props);
         $inventory->save();
         return $inventory;
