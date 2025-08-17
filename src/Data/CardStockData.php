@@ -79,15 +79,16 @@ class CardStockData extends Data implements DataCardStockData{
 
     public static function before(array &$attributes){
         $new = self::new();
-        
         $attributes['stock_movements'] ??= [];
+        $attributes['total_tax'] ??= 0;
+        $attributes['total_cogs'] ??= 0;
         if (isset($attributes['stock_movement'])) {
             $attributes['stock_movements'][] = $attributes['stock_movement'];
             unset($attributes['stock_movement']);
         }
         if (isset($attributes['item_id'])){
             $item = $new->ItemModel()->findOrFail($attributes['item_id']);
-            $attributes['prop_item'] = $item->toViewApi()->resolve();
+            $attributes['prop_item'] = $item->toViewApiOnlies('id','barcode','item_code','name','unit');
             
             foreach ($attributes['stock_movements'] as &$stock_movement) {
                 $stock_movement['qty_unit_id'] ??= $item->unit_id;
@@ -97,7 +98,6 @@ class CardStockData extends Data implements DataCardStockData{
 
     public static function after(CardStockData $data): CardStockData{
         $new = self::new();
-
         $props = &$data->props->props;
 
         if (isset($data->reference_type)){

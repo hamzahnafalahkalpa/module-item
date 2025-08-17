@@ -24,10 +24,11 @@ class CardStock extends PackageManagement implements ContractsCardStock
     protected mixed $__order_by_created_at = ['reported_at', 'desc']; //asc, desc, false
 
     protected function createCardStock(CardStockData &$card_stock_dto){
+        $props = &$card_stock_dto->props->props;
         if (!isset($card_stock_dto->item_id) && isset($card_stock_dto->item)){
             $item_model = $this->schemaContract('item')->prepareStoreItem($card_stock_dto->item);
             $card_stock_dto->item_id = $item_model->getKey();
-            $card_stock_dto->props->props['prop_item'] = $item_model->toViewApi()->resolve();
+            $props['prop_item'] = $item_model->toViewApiOnlies('id','name','reference_type','reference_id','unit_id','unit','selling_price','cogs');
             foreach ($card_stock_dto->stock_movements as &$stock_movement) {
                 $stock_movement->qty_unit_id ??= $item_model->unit_id;
                 $stock_movement->props->props['prop_unit'] = $item_model->prop_unit;
@@ -48,8 +49,10 @@ class CardStock extends PackageManagement implements ContractsCardStock
             $create = [$add];
         }
         $card_stock = $this->usingEntity()->firstOrCreate(...$create);
-
         $card_stock->load(['transactionItem','transaction.reference']);
+
+        $props['prop_transaction'] = $card_stock->transaction->toViewApiOnlies('id','reference_type','reference_id','transaction_code');
+
         if (count($card_stock_dto->stock_movements) == 0 && isset($card_stock_dto->stock_movement)) {
             $card_stock_dto->stock_movements = [$card_stock_dto->stock_movement];
             foreach ($card_stock_dto->stock_movements as &$stock_movement) {
