@@ -5,9 +5,7 @@
     "require": {
         "hanafalah/laravel-support": "dev-main",
         "hanafalah/module-service": "dev-main",
-        "hanafalah/module-warehouse": "dev-main",
-        "hanafalah/module-transaction": "dev-main",
-        "hanafalah/module-distribution": "dev-main"
+        "hanafalah/module-warehouse": "dev-main"
     },
     "autoload": {
         "psr-4": {

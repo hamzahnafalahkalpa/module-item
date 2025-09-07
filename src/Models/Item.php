@@ -125,6 +125,5 @@ class Item extends BaseModel
         );
     }
 
-    public function coa(){return $this->belongsToModel('Coa');}
     public function itemHasVariants(){return $this->hasManyModel('ItemHasVariant');}
 }
