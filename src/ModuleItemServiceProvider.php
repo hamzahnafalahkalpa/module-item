@@ -2,10 +2,6 @@
 
 namespace Hanafalah\ModuleItem;
 
-use Hanafalah\ModulePayer\{
-    Models\Item,
-    Schemas\Item as SchemaPayer,
-};
 use Hanafalah\LaravelSupport\Providers\BaseServiceProvider;
 
 class ModuleItemServiceProvider extends BaseServiceProvider
