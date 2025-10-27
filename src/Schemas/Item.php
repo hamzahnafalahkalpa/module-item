@@ -34,7 +34,6 @@ class Item extends PackageManagement implements ContractsItem
                 $item_dto->reference_id = $reference->getKey();
             }   
         }
-
         $add = [
             'barcode'             => $item_dto->barcode,
             'name'                => $item_dto->name,

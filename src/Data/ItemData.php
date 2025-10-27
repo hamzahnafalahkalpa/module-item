@@ -142,7 +142,7 @@ class ItemData extends Data implements DataItemData{
 
         $coa = $new->CoaModel();
         $coa = (isset($data->coa_id)) ? $coa->findOrFail($data->coa_id) : $coa;
-        $props['prop_coa'] = $coa->toViewApi()->resolve();
+        $props['prop_coa'] = $coa->toViewApiOnlies('id','name','code','flag');
 
         $data->selling_price ??= $data->cogs + $data->cogs * $data->margin/100;
         return $data;
