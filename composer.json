@@ -12,13 +12,6 @@
             "Hanafalah\\ModuleItem\\": "src/"
         }
     },
-    "extra": {
-        "laravel": {
-            "providers": [
-                "Hanafalah\\ModuleItem\\ModuleItemServiceProvider"
-            ]
-        }
-    },
     "authors": [
         {
             "name": "hamzah nur al falah",
