@@ -171,6 +171,7 @@ class ItemData extends Data implements DataItemData{
         $item_stuff = $new->SellingFormModel();
         if (isset($data->unit_id)) {
             $item_stuff = $item_stuff->withoutGlobalScopes()->findOrFail($data->unit_id);
+
         }else{
             if (isset($data->unit,$data->unit['name'])){
                 $item_stuff = $item_stuff->firstOrCreate([
