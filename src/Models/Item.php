@@ -80,7 +80,7 @@ class Item extends BaseModel
 
     public function getViewResource(){return ViewItem::class;}
     public function getShowResource(){return ShowItem::class;}
-    protected function isUsingService(): bool{
+    public function isUsingService(): bool{
         $reference = $this->reference;
         $configs = config('module-service.is_using_services',[]);
         return in_array($reference->getMorphClass(), $configs) || (method_exists($reference, 'isUsingService') && $reference->isUsingService());
