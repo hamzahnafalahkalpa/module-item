@@ -117,17 +117,17 @@ class Item extends PackageManagement implements ContractsItem
     protected function processItemStock(ItemData &$item_dto, &$item){
         $item_stock_dto = $item_dto->item_stock;
         if (isset($item_stock_dto->warehouse_id) && isset($item_stock_dto->warehouse_type)) {
-            if (isset($item_stock_dto->stock) || (isset($item_stock_dto->stock_batches) && count($item_stock_dto->stock_batches) > 0)) {
+            if (isset($item_stock_dto->stock) || (isset($item_stock_dto->stock_batches) && count($item_stock_dto->stock_batches) > 0) || (isset($item_stock_dto->childs) && count($item_stock_dto->childs) > 0)) {
                 if ($item_dto->is_using_batch) {
                     if (!isset($item_stock_dto->stock_batches) || count($item_stock_dto->stock_batches) == 0) {
                         throw new \Exception('No stock batches provided', 422);
                     }
                 }
-                $funding = $this->FundingModel()->where('props->is_self', true)->first();
-                if (!isset($funding)) throw new \Exception('No funding provided', 422);
+                // $funding = $this->FundingModel()->where('props->is_self', true)->first();
+                // if (!isset($funding)) throw new \Exception('No funding provided', 422);
 
                 $item_stock_schema            = $this->schemaContract('item_stock');
-                $item_stock_dto->funding_id   = $funding->getKey();
+                // $item_stock_dto->funding_id   = $funding->getKey();
                 $item_stock_dto->subject_type = $item->getMorphClass();
                 $item_stock_dto->subject_id   = $item->getKey();
                 $item_stock_schema->prepareStoreItemStock($item_stock_dto);

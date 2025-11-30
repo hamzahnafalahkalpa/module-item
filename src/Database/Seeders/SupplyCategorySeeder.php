@@ -97,6 +97,7 @@ class SupplyCategorySeeder extends Seeder{
 
     public function run()
     {
+        echo "[DEBUG] Booting ".class_basename($this)."\n";
         foreach ($this->datas as $data) {
             app(config('app.contracts.SupplyCategory'))->prepareStoreSupplyCategory(
                 $this->requestDTO(config('app.contracts.SupplyCategoryData'), $data)
