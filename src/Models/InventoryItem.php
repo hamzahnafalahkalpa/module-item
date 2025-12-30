@@ -27,19 +27,17 @@ class InventoryItem extends BaseModel
     ];
 
     protected $casts = [
-        'name'                 => 'string',
-        'code'                 => 'string',
-        'label'                => 'string',
-        'supply_category_name' => 'string',
-        'brand_name'           => 'string'
+        'name'  => 'string',
+        'label' => 'string',
+        'flag' => 'string',
     ];
 
-    public function getPropsQuery(): array{
-        return [
-            'supply_category_name' => 'props->prop_supply_category->name',
-            'brand_name'           => 'props->prop_brand->name'
-        ];
-    }
+    // public function getPropsQuery(): array{
+    //     return [
+    //         'supply_category_name' => 'props->prop_supply_category->name',
+    //         'brand_name'           => 'props->prop_brand->name'
+    //     ];
+    // }
 
     protected static function booted(): void{
         parent::booted();
@@ -61,7 +59,4 @@ class InventoryItem extends BaseModel
 
     public function getViewResource(){return ViewInventoryItem::class;}
     public function getShowResource(){return ShowInventoryItem::class;}
-
-    public function supplyCategory(){return $this->belongsToModel('SupplyCategory');}
-    public function brand(){return $this->belongsToModel('Brand');}
 }
