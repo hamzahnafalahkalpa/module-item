@@ -129,7 +129,7 @@ class Item extends PackageManagement implements ContractsItem
                 $item_stock_schema            = $this->schemaContract('item_stock');
                 // $item_stock_dto->funding_id   = $funding->getKey();
                 $item_stock_dto->subject_type = $item->getMorphClass();
-                $item_stock_dto->subject_id   = $item->getKey();
+                $item_stock_dto->subject_id   = (string) $item->getKey();
                 $item_stock_schema->prepareStoreItemStock($item_stock_dto);
             }
         }
