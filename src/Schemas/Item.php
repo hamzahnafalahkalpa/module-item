@@ -7,11 +7,11 @@ use Hanafalah\ModuleItem\Contracts\Schemas\{
 };
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Hanafalah\LaravelSupport\Supports\PackageManagement;
 use Hanafalah\ModuleItem\Contracts\Data\ItemData;
+use Hanafalah\ModuleItem\Supports\BaseModuleItem;
 use Illuminate\Support\Str;
 
-class Item extends PackageManagement implements ContractsItem
+class Item extends BaseModuleItem implements ContractsItem
 {
     protected string $__entity = 'Item';
     public $item_model;
